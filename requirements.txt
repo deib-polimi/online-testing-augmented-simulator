@@ -1,0 +1,28 @@
+# Pytorch related stuff
+torch==2.2.0
+torchvision==0.17.0
+torchaudio==2.2.0
+lightning==2.1.4
+torchinfo==1.8.0
+
+# Online Learning Environment
+gymnasium==0.29.1
+
+# Open CV for image editing
+opencv-contrib-python==4.9.0.80
+opencv-python==4.9.0.80
+
+# Server and websockets for communication with simulator
+# Do not update, recent versions do not work
+# Probably need refactoring
+Flask==2.0.0
+Flask-SocketIO==4.3.1
+python-engineio==3.13.2
+Werkzeug==2.2.2
+eventlet==0.35.1
+
+# Visualization
+pygame==2.5.2
+
+# Loggin and data management
+pandas==2.2.0
