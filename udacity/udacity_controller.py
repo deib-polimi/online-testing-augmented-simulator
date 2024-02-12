@@ -135,7 +135,6 @@ def connect(sid, environ) -> None:
 
 
 def send_control(steering_angle: float, throttle_command: float) -> None:
-
     # TODO: can be managed better
     # check only when the state is changed
     # put all simulation state inside an object
@@ -189,6 +188,8 @@ def send_resume() -> None:
 def telemetry(sid, data) -> None:
     global observation
     global action
+
+    print(data)
 
     if data:
         observation = UdacityObservation(
