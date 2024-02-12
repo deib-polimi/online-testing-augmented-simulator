@@ -60,7 +60,7 @@ log_after_callback = LogObservationCallback(path=f"log/{run_name}/after", enable
 resume_callback = ResumeSimulationCallback(simulator_controller=controller)
 agent = LaneKeepingAgent(model.model,
                          before_action_callbacks=[pause_callback, log_before_callback],
-                         # transform_callbacks=[transform_callback],
+                         transform_callbacks=[transform_callback],
                          after_action_callbacks=[log_after_callback, resume_callback],
                          )
 
