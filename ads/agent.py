@@ -125,6 +125,6 @@ class TransformObservationCallback(AgentCallback):
     def __call__(self, observation: UdacityObservation, *args, **kwargs):
         super().__call__(observation, *args, **kwargs)
         # Change with parameter
-        augmented_image: torch.Tensor = self.transformation(torchvision.transforms.ToTensor()(observation.input_image)).to("cuda:1")
+        augmented_image: torch.Tensor = self.transformation(torchvision.transforms.ToTensor()(observation.input_image).to("cuda:1"))
         observation.input_image = (augmented_image.permute(1, 2, 0).detach().numpy() * 255).astype(np.uint8)
         return observation
