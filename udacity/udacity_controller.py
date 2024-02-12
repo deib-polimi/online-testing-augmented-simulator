@@ -189,8 +189,6 @@ def telemetry(sid, data) -> None:
     global observation
     global action
 
-    print(data)
-
     if data:
         observation = UdacityObservation(
             input_image=np.array(Image.open(BytesIO(base64.b64decode(data["image"])))),
