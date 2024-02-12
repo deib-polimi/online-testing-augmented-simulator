@@ -23,7 +23,7 @@ port = 4567
 simulator_exe_path = "simulator/udacity.x86_64"
 # simulator_exe_path = "/media/banana/5E32C4AD32C48C09/Users/DAVID/Documents/self-driving-car-sim-new/Builds/udacity.x86_64"
 checkpoint = "lake_sunny_day_60_0.ckpt"
-run_name = "foggy_pony"
+run_name = "snowy_pony"
 device = "cuda:1"
 
 torch.set_default_device(device)
@@ -54,7 +54,7 @@ model.load_state_dict(torch.load(checkpoint, map_location=lambda storage, loc: s
 pause_callback = PauseSimulationCallback(simulator_controller=controller)
 log_before_callback = LogObservationCallback(path=f"log/{run_name}/before")
 # TODO: find better name for x
-checkpoint = "cyclegan_foggy.ckpt"
+checkpoint = "cyclegan_snowy.ckpt"
 x = CycleGAN().to(device)
 x.load_state_dict(torch.load(checkpoint, map_location=lambda storage, loc: storage)['state_dict'])
 augmentation = NNAugmentation(checkpoint, x)
