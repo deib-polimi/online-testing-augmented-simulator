@@ -51,7 +51,7 @@ from augment.gan.cyclegan import CycleGAN
 from udacity.udacity_gym import UdacityObservation, UdacityAction
 from utils.logger import CustomLogger
 
-sio = socketio.Server()
+sio = socketio.Server(cors_allowed_origins="*")
 flask_app = Flask(__name__)
 
 logger = CustomLogger("Controller")
