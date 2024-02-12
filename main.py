@@ -24,6 +24,7 @@ simulator_exe_path = "simulator/udacity.x86_64"
 # simulator_exe_path = "/media/banana/5E32C4AD32C48C09/Users/DAVID/Documents/self-driving-car-sim-new/Builds/udacity.x86_64"
 checkpoint = "lake_sunny_day_60_0.ckpt"
 run_name = "fluffy_pony"
+device = "cuda:1"
 
 # Start Simulator
 simulator = UdacitySimulator(
@@ -52,13 +53,13 @@ pause_callback = PauseSimulationCallback(simulator_controller=controller)
 log_before_callback = LogObservationCallback(path=f"log/{run_name}/before")
 # TODO: find better name for x
 checkpoint = "cyclegan_rainy.ckpt"
-x = CycleGAN()
+x = CycleGAN().to(device)
 x.load_state_dict(torch.load(checkpoint, map_location=lambda storage, loc: storage)['state_dict'])
 augmentation = NNAugmentation(checkpoint, x)
 transform_callback = TransformObservationCallback(augmentation)
 log_after_callback = LogObservationCallback(path=f"log/{run_name}/after", enable_pygame_logging=True)
 resume_callback = ResumeSimulationCallback(simulator_controller=controller)
-agent = LaneKeepingAgent(model.model,
+agent = LaneKeepingAgent(model.model.to(device),
                          before_action_callbacks=[pause_callback, log_before_callback],
                          transform_callbacks=[transform_callback],
                          after_action_callbacks=[log_after_callback, resume_callback],
