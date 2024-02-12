@@ -26,7 +26,7 @@ checkpoint = "lake_sunny_day_60_0.ckpt"
 run_name = "rainy_pony"
 device = "cuda:1"
 
-torch.device(device)
+torch.set_default_device(device)
 
 # Start Simulator
 simulator = UdacitySimulator(
