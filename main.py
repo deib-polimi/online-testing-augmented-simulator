@@ -23,7 +23,7 @@ port = 4567
 simulator_exe_path = "simulator/udacity.x86_64"
 # simulator_exe_path = "/media/banana/5E32C4AD32C48C09/Users/DAVID/Documents/self-driving-car-sim-new/Builds/udacity.x86_64"
 checkpoint = "lake_sunny_day_60_0.ckpt"
-run_name = "fluffy_pony"
+run_name = "rainy_pony"
 device = "cuda:1"
 
 # Start Simulator
