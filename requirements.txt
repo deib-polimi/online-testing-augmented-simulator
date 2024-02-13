@@ -5,6 +5,10 @@ torchaudio==2.2.0
 lightning==2.1.4
 torchinfo==1.8.0
 
+# Huggingface Diffusers
+diffusers==0.26.3
+transformers==4.37.2
+
 # Online Learning Environment
 gymnasium==0.29.1
 
