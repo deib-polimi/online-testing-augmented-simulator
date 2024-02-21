@@ -6,6 +6,8 @@ import torch
 from diffusers import StableDiffusionInstructPix2PixPipeline, EulerAncestralDiscreteScheduler
 from diffusers.utils import load_image
 
+from utils.conf import DEFAULT_DEVICE
+
 
 class InstructPix2Pix:
 
@@ -14,7 +16,7 @@ class InstructPix2Pix:
                                                                            torch_dtype=torch.float16,
                                                                            safety_checker=None)
         # TODO:create default device
-        self.pipe.to("cuda:1")
+        self.pipe.to(DEFAULT_DEVICE)
         self.pipe.scheduler = EulerAncestralDiscreteScheduler.from_config(self.pipe.scheduler.config)
         self.prompt = prompt
         self.guidance = guidance

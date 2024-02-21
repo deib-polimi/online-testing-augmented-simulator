@@ -1,6 +1,4 @@
-import argparse
 import itertools
-import pathlib
 import random
 from typing import Any, Tuple
 
@@ -8,15 +6,8 @@ import lightning as pl
 import numpy as np
 import torch
 import torch.nn as nn
-import torchvision
-import torchvision.transforms as T
-from lightning.pytorch.callbacks import ModelCheckpoint
 from torch.autograd import Variable
-from torch.utils.data import DataLoader
-# from torchsummary import summary
 from torchvision.models import vgg19, VGG19_Weights
-
-# from path import SAMPLE_DIR
 
 
 class ReplayBuffer:
@@ -71,23 +62,33 @@ class CycleGAN(pl.LightningModule):
         self.criterion_identity = torch.nn.L1Loss()
         self.fake_A_buffer = ReplayBuffer()
         self.fake_B_buffer = ReplayBuffer()
-        # self.sample_dir = SAMPLE_DIR.joinpath("gan")
-        # self.sample_dir.mkdir(parents=True, exist_ok=True)
+        # for multiple optimizers
+        self.automatic_optimization = False
 
     def forward(self, x):
         # TODO
         return self.generator_AB(x)
 
-    def training_step(self, batch, batch_idx, optimizer_idx):
-        if optimizer_idx == 0:
-            return self._generator_training_step(batch, batch_idx)
-        elif optimizer_idx == 1:
-            return self._discriminator_a_training_step(batch, batch_idx)
-        elif optimizer_idx == 2:
-            return self._discriminator_b_training_step(batch, batch_idx)
+    def training_step(self, batch, batch_idx):
+
+        g_opt, da_opt, db_opt = self.optimizers()
+
+        g_loss = self._generator_training_step(batch, batch_idx)
+        g_opt.zero_grad()
+        self.manual_backward(g_loss)
+        g_opt.step()
+
+        da_loss = self._discriminator_a_training_step(batch, batch_idx)
+        da_opt.zero_grad()
+        self.manual_backward(da_loss)
+        da_opt.step()
+
+        da_loss = self._discriminator_b_training_step(batch, batch_idx)
+        db_opt.zero_grad()
+        self.manual_backward(da_loss)
+        db_opt.step()
 
     def _generator_training_step(self, batch, batch_idx):
-
         real_A, real_B = batch[0], batch[1]
 
         self.valid = torch.tensor(np.ones((real_A.size(0), *self.discriminator_A.output_shape)), requires_grad=True).to(
@@ -119,13 +120,12 @@ class CycleGAN(pl.LightningModule):
         self.log("train/g/cycle", loss_cycle, prog_bar=True)
         self.log("train/g/identity", loss_identity, prog_bar=True)
 
-        if (self.global_step * 3 % 500) == 0:
-            self._save_batch(real_A, real_B, fake_A, fake_B, "train")
+        # if (self.global_step * 3 % 500) == 0:
+        #     self._save_batch(real_A, real_B, fake_A, fake_B, "train")
 
         return loss_G
 
     def _discriminator_b_training_step(self, batch, batch_idx):
-
         real_A, real_B = batch[0], batch[1]
         valid = torch.tensor(np.ones((real_A.size(0), *self.discriminator_A.output_shape)), requires_grad=True).to(
             real_A)
@@ -145,7 +145,6 @@ class CycleGAN(pl.LightningModule):
         return loss_D_B
 
     def _discriminator_a_training_step(self, batch, batch_idx):
-
         real_A, real_B = batch[0], batch[1]
         valid = torch.tensor(np.ones((real_A.size(0), *self.discriminator_A.output_shape)), requires_grad=True).to(
             real_A)
@@ -172,11 +171,11 @@ class CycleGAN(pl.LightningModule):
             torch.optim.Adam(self.discriminator_B.parameters(), lr=self.learning_rate),
         ]
 
-    def _save_batch(self, real_a, real_b, fake_a, fake_b, prefix):
-        images = torch.cat([real_a[:8], real_b[:8], fake_a[:8], fake_b[:8]], 0)
-        grid = torchvision.utils.make_grid(images, nrow=8)
-        torchvision.utils.save_image(grid,
-                                     f"{self.sample_dir}/{prefix}_{self.current_epoch:0>8}_{self.global_step:0>8}.png")
+    # def _save_batch(self, real_a, real_b, fake_a, fake_b, prefix):
+    #     images = torch.cat([real_a[:8], real_b[:8], fake_a[:8], fake_b[:8]], 0)
+    #     grid = torchvision.utils.make_grid(images, nrow=8)
+    #     torchvision.utils.save_image(grid,
+    #                                  f"{self.sample_dir}/{prefix}_{self.current_epoch:0>8}_{self.global_step:0>8}.png")
 
 
 ##############################
@@ -289,7 +288,3 @@ class Discriminator(nn.Module):
 
 if __name__ == '__main__':
     model = CycleGAN()
-    # model.load_state_dict()
-    # summary(model, (3, 160, 320))
-    # summary(model.discriminator_A, (3, 160, 320))
-    # summary(model.discriminator_B, (3, 160, 320))

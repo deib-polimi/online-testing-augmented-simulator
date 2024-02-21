@@ -1,22 +1,10 @@
-# Original author: Roma Sokolkov
-# Edited by Antonin Raffin
-import os
-import time
 from typing import Optional, Tuple, Dict, Union, Any, SupportsFloat
-
 import gymnasium as gym
 import numpy as np
 from gymnasium import spaces
-
-from udacity.udacity_action import UdacityAction
-from udacity.udacity_observation import UdacityObservation
+from udacity.action import UdacityAction
+from udacity.observation import UdacityObservation
 from utils.logger import CustomLogger
-
-
-# from examples.udacity.udacity_utils.envs.udacity.config import BASE_PORT, MAX_STEERING, INPUT_DIM
-# from examples.udacity.udacity_utils.envs.udacity.core.udacity_sim import UdacitySimController
-# from examples.udacity.udacity_utils.envs.unity_proc import UnityProcess
-# from examples.udacity.udacity_utils.global_log import GlobalLog
 
 class UdacityGym(gym.Env):
     """
@@ -30,14 +18,12 @@ class UdacityGym(gym.Env):
     def __init__(
             self,
             simulator,
-            executor,
             max_steering: float = 1.0,
             max_throttle: float = 1.0,
             input_shape: Tuple[int, int, int] = (3, 160, 320),
     ):
         # Save object properties and parameters
         self.simulator = simulator
-        self.executor = executor
 
         self.max_steering = max_steering
         self.max_throttle = max_throttle
@@ -67,10 +53,11 @@ class UdacityGym(gym.Env):
         # action[0] is the steering angle
         # action[1] is the throttle
 
-        self.executor.take_action(action)
+        self.simulator.step(action)
         observation = self.observe()
 
-        return observation, observation.cte, self.executor.is_game_over(), self.executor.is_game_over(), {}
+        # TODO: fix the two Falses
+        return observation, observation.cte, False, False, {}
 
     def reset(
             self,
@@ -78,9 +65,10 @@ class UdacityGym(gym.Env):
             track_string: Union[str, None] = None,
     ) -> tuple[UdacityObservation, dict[str, Any]]:
 
-        observation, info = self.executor.reset(
-            skip_generation=skip_generation,
-            track_string=track_string,
+        # TODO: choose scene at reset
+        observation, info = self.simulator.reset(
+            # skip_generation=skip_generation,
+            # track_string=track_string,
         )
 
         # TODO: Add track choice
@@ -89,14 +77,12 @@ class UdacityGym(gym.Env):
 
     def render(self, mode: str = "human") -> Optional[np.ndarray]:
         if mode == "rgb_array":
-            return self.executor.image_array
+            return self.simulator.sim_state['observation'].image_array
         return None
 
     def observe(self) -> UdacityObservation:
-        return self.executor.observe()
+        return self.simulator.observe()
 
     def close(self) -> None:
         if self.simulator is not None:
-            self.simulator.quit()
-        if self.executor is not None:
-            self.executor.quit()
+            self.simulator.close()

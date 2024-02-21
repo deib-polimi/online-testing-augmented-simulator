@@ -48,7 +48,7 @@ from socketio import Server
 import logging
 
 from augment.gan.cyclegan import CycleGAN
-from udacity.udacity_gym import UdacityObservation, UdacityAction
+from udacity.gym import UdacityObservation, UdacityAction
 from utils.logger import CustomLogger
 
 sio = socketio.Server(cors_allowed_origins="*")
@@ -88,8 +88,8 @@ observation = UdacityObservation(
     steering_angle=0.0,
     throttle=0.0,
     speed=0.0,
-    n_collisions=0,
-    n_out_of_tracks=0,
+    # n_collisions=0,
+    # n_out_of_tracks=0,
     cte=0.0,
     time=-1
 )

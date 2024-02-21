@@ -8,9 +8,11 @@ import pygame
 import torch
 import torchvision
 
-from udacity.udacity_action import UdacityAction
+from udacity.action import UdacityAction
+from udacity.simulator import UdacitySimulator
 from udacity.udacity_controller import UdacitySimController
-from udacity.udacity_observation import UdacityObservation
+from udacity.observation import UdacityObservation
+from utils.conf import DEFAULT_DEVICE
 
 
 class LaneKeepingAgent:
@@ -30,7 +32,8 @@ class LaneKeepingAgent:
         for callback in self.transform_callbacks:
             observation = callback(observation)
         # TODO: change to variable or class attribute
-        prediction = self.model(torchvision.transforms.ToTensor()(observation.input_image).to("cuda:1"))
+        # prediction = self.model(torchvision.transforms.ToTensor()(observation.input_image).to("cuda:1"))
+        prediction = self.model(torchvision.transforms.ToTensor()(observation.input_image).to(DEFAULT_DEVICE))
         action = UdacityAction(steering_angle=prediction.item() * 1.4, throttle=0.2)
         for callback in self.after_action_callbacks:
             callback(observation, action=action)
@@ -53,24 +56,24 @@ class AgentCallback:
 
 class PauseSimulationCallback(AgentCallback):
 
-    def __init__(self, simulator_controller: UdacitySimController):
+    def __init__(self, simulator: UdacitySimulator):
         super().__init__('stop_simulation')
-        self.simulator_controller = simulator_controller
+        self.simulator = simulator
 
     def __call__(self, observation: UdacityObservation, *args, **kwargs):
         super().__call__(observation, *args, **kwargs)
-        self.simulator_controller.pause()
+        self.simulator.pause()
 
 
 class ResumeSimulationCallback(AgentCallback):
 
-    def __init__(self, simulator_controller: UdacitySimController):
+    def __init__(self, simulator: UdacitySimulator):
         super().__init__('resume_simulation')
-        self.simulator_controller = simulator_controller
+        self.simulator = simulator
 
     def __call__(self, observation: UdacityObservation, *args, **kwargs):
         super().__call__(observation, *args, **kwargs)
-        self.simulator_controller.resume()
+        self.simulator.resume()
 
 
 class LogObservationCallback(AgentCallback):
@@ -125,6 +128,9 @@ class TransformObservationCallback(AgentCallback):
     def __call__(self, observation: UdacityObservation, *args, **kwargs):
         super().__call__(observation, *args, **kwargs)
         # Change with parameter
-        augmented_image: torch.Tensor = self.transformation(torchvision.transforms.ToTensor()(observation.input_image).to("cuda:1"))
+        # augmented_image: torch.Tensor = self.transformation(torchvision.transforms.ToTensor()(observation.input_image).to("cuda:1"))
+        augmented_image: torch.Tensor = self.transformation(
+            torchvision.transforms.ToTensor()(observation.input_image).to(DEFAULT_DEVICE)
+        )
         observation.input_image = (augmented_image.permute(1, 2, 0).detach().cpu().numpy() * 255).astype(np.uint8)
         return observation

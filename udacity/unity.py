@@ -102,7 +102,7 @@ class UnityProcess(object):
 
         self.logger.info("Unity subprocess started")
 
-    def quit(self):
+    def close(self):
         """
         Shutdown unity environment
         """

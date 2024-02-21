@@ -10,8 +10,8 @@ from augment.dm.ip2p import InstructPix2Pix
 from augment.gan.cyclegan import CycleGAN
 from augment.nn_augment import NNAugmentation
 from udacity.udacity_controller import UdacitySimController, send_pause, send_resume
-from udacity.udacity_gym import UdacityGym, UdacityAction
-from udacity.udacity_simulator import UdacitySimulator
+from udacity.gym import UdacityGym, UdacityAction
+from udacity.simulator import UdacitySimulator
 import torchvision.transforms as t
 
 # This file represents an experimental run
@@ -33,7 +33,7 @@ for weather in ["autumn"]:
 
     # Start Simulator
     simulator = UdacitySimulator(
-        simulator_exe_path=simulator_exe_path,
+        sim_exe_path=simulator_exe_path,
         host=host,
         port=port,
     )
