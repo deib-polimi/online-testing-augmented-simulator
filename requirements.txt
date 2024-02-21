@@ -8,6 +8,7 @@ torchinfo==1.8.0
 # Huggingface Diffusers
 diffusers==0.26.3
 transformers==4.37.2
+accelerate
 
 # Online Learning Environment
 gymnasium==0.29.1
@@ -31,3 +32,8 @@ pygame==2.5.2
 
 # Loggin and data management
 pandas==2.2.0
+
+# Video generation
+imageio==2.33.1
+imageio[pyav]==2.33.1
+imageio[ffmpeg]==2.33.1

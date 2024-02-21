@@ -6,6 +6,7 @@ from tqdm import tqdm
 from ads.agent import LaneKeepingAgent, PauseSimulationCallback, ResumeSimulationCallback, LogObservationCallback, \
     TransformObservationCallback
 from ads.model import get_nn_architecture, UdacityDrivingModel
+from augment.dm.ip2p import InstructPix2Pix
 from augment.gan.cyclegan import CycleGAN
 from augment.nn_augment import NNAugmentation
 from udacity.udacity_controller import UdacitySimController, send_pause, send_resume
@@ -19,14 +20,12 @@ import torchvision.transforms as t
 host = "127.0.0.1"
 port = 4567
 
-# TODO: if path is moved, we get a problem
 simulator_exe_path = "simulator/udacity.x86_64"
-# simulator_exe_path = "/media/banana/5E32C4AD32C48C09/Users/DAVID/Documents/self-driving-car-sim-new/Builds/udacity.x86_64"
 checkpoint = "lake_sunny_day_60_0.ckpt"
 run_name = "snowy_pony"
 device = "cuda:1"
 
-torch.set_default_device(device)
+# torch.set_default_device(device)
 
 # Start Simulator
 simulator = UdacitySimulator(
@@ -54,10 +53,14 @@ model.load_state_dict(torch.load(checkpoint, map_location=lambda storage, loc: s
 pause_callback = PauseSimulationCallback(simulator_controller=controller)
 log_before_callback = LogObservationCallback(path=f"log/{run_name}/before")
 # TODO: find better name for x
-checkpoint = "cyclegan_snowy.ckpt"
-x = CycleGAN().to(device)
-x.load_state_dict(torch.load(checkpoint, map_location=lambda storage, loc: storage)['state_dict'])
-augmentation = NNAugmentation(checkpoint, x)
+# checkpoint = "cyclegan_snowy.ckpt"
+# x = CycleGAN().to(device)
+# x.load_state_dict(torch.load(checkpoint, map_location=lambda storage, loc: storage)['state_dict'])
+# augmentation = NNAugmentation(checkpoint, x)
+
+#TODO: find better way to add augmentation
+ip2p = InstructPix2Pix("make it snowy", guidance=1.5)
+augmentation = NNAugmentation(checkpoint, ip2p)
 transform_callback = TransformObservationCallback(augmentation)
 log_after_callback = LogObservationCallback(path=f"log/{run_name}/after", enable_pygame_logging=True)
 resume_callback = ResumeSimulationCallback(simulator_controller=controller)
@@ -81,7 +84,7 @@ while observation.input_image is None:
 
 print("ready to drive")
 # Drive
-for _ in tqdm(range(5000)):
+for _ in tqdm(range(2000)):
     with torch.inference_mode():
         action = agent(observation)
         # action = UdacityAction(steering_angle=0.0, throttle=0.1)
@@ -91,8 +94,8 @@ for _ in tqdm(range(5000)):
         #     break
         time.sleep(0.1)
 
+
+# Save all data and close experiment
 log_before_callback.save()
 log_after_callback.save()
-
-# Close experiment
 env.close()
