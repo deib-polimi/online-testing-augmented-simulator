@@ -24,9 +24,9 @@ port = 4567
 
 simulator_exe_path = "simulator/udacity.x86_64"
 checkpoint = "lake_sunny_day_60_0.ckpt"
-run_name = "snowy_pony"
+run_name = "turborainy_cow"
 
-torch.set_default_device(DEFAULT_DEVICE)
+# torch.set_default_device(DEFAULT_DEVICE)
 
 # Start Simulator
 simulator = UdacitySimulator(
@@ -47,14 +47,14 @@ model.load_state_dict(torch.load(checkpoint, map_location=lambda storage, loc: s
 pause_callback = PauseSimulationCallback(simulator=simulator)
 log_before_callback = LogObservationCallback(path=f"log/{run_name}/before")
 # TODO: find better name for x
-checkpoint = "cyclegan_foggy.ckpt"
-x = CycleGAN().to(DEFAULT_DEVICE)
-x.load_state_dict(torch.load(checkpoint, map_location=lambda storage, loc: storage)['state_dict'])
-augmentation = NNAugmentation(checkpoint, x)
+# checkpoint = "cyclegan_foggy.ckpt"
+# x = CycleGAN().to(DEFAULT_DEVICE)
+# x.load_state_dict(torch.load(checkpoint, map_location=lambda storage, loc: storage)['state_dict'])
+# augmentation = NNAugmentation(checkpoint, x)
 
 # #TODO: find better way to add augmentation
-# ip2p = InstructPix2Pix("make it snowy", guidance=1.5)
-# augmentation = NNAugmentation(checkpoint, ip2p)
+ip2p = InstructPix2Pix("make it rainy", guidance=1.4)
+augmentation = NNAugmentation(checkpoint, ip2p)
 transform_callback = TransformObservationCallback(augmentation)
 log_after_callback = LogObservationCallback(path=f"log/{run_name}/after", enable_pygame_logging=True)
 resume_callback = ResumeSimulationCallback(simulator=simulator)
@@ -78,13 +78,13 @@ while observation.input_image is None:
 
 print("ready to drive")
 # Drive
-for _ in tqdm(range(3000)):
+for _ in tqdm(range(5000)):
     with torch.inference_mode():
         action = agent(observation)
         observation, reward, terminated, truncated, info = env.step(action)
-        time.sleep(0.15)
+        time.sleep(0.1)
 
-
+# TODO: Save episode information
 # Save all data and close experiment
 log_before_callback.save()
 log_after_callback.save()

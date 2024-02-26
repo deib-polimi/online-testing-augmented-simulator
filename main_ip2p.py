@@ -20,7 +20,7 @@ import torchvision.transforms as t
 host = "127.0.0.1"
 port = 4567
 
-for weather in ["autumn"]:
+for weather in ["evening"]:
 
     # TODO: if path is moved, we get a problem
     simulator_exe_path = "simulator/udacity.x86_64"

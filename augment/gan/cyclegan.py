@@ -47,11 +47,11 @@ class CycleGAN(pl.LightningModule):
         self.save_hyperparameters()
         self.learning_rate = learning_rate
         # self.sample_dir = sample_dir
-        self.vgg = get_vgg()
-        for param in self.vgg.parameters():
-            param.requires_grad = False
-        self.generator_AB = GeneratorResNet(input_shape, 9)
-        self.generator_BA = GeneratorResNet(input_shape, 9)
+        # self.vgg = get_vgg()
+        # for param in self.vgg.parameters():
+        #     param.requires_grad = False
+        self.generator_AB = GeneratorResNet(input_shape, 8)
+        self.generator_BA = GeneratorResNet(input_shape, 8)
         self.discriminator_A = Discriminator(input_shape)
         self.discriminator_B = Discriminator(input_shape)
         # training
@@ -60,8 +60,8 @@ class CycleGAN(pl.LightningModule):
         self.criterion_GAN = torch.nn.MSELoss()
         self.criterion_cycle = torch.nn.L1Loss()
         self.criterion_identity = torch.nn.L1Loss()
-        self.fake_A_buffer = ReplayBuffer()
-        self.fake_B_buffer = ReplayBuffer()
+        # self.fake_A_buffer = ReplayBuffer()
+        # self.fake_B_buffer = ReplayBuffer()
         # for multiple optimizers
         self.automatic_optimization = False
 
@@ -83,9 +83,9 @@ class CycleGAN(pl.LightningModule):
         self.manual_backward(da_loss)
         da_opt.step()
 
-        da_loss = self._discriminator_b_training_step(batch, batch_idx)
+        db_loss = self._discriminator_b_training_step(batch, batch_idx)
         db_opt.zero_grad()
-        self.manual_backward(da_loss)
+        self.manual_backward(db_loss)
         db_opt.step()
 
     def _generator_training_step(self, batch, batch_idx):
@@ -114,14 +114,16 @@ class CycleGAN(pl.LightningModule):
         loss_cycle = (loss_cycle_A + loss_cycle_B) / 2
 
         # Total loss
-        loss_G = loss_GAN + 10.0 * loss_cycle + 5.0 * loss_identity
+        loss_G = loss_GAN * 10.0 * loss_cycle + 5.0 * loss_identity
 
         self.log("train/g/gan", loss_GAN, prog_bar=True)
         self.log("train/g/cycle", loss_cycle, prog_bar=True)
         self.log("train/g/identity", loss_identity, prog_bar=True)
 
-        # if (self.global_step * 3 % 500) == 0:
-        #     self._save_batch(real_A, real_B, fake_A, fake_B, "train")
+        if (self.global_step % 500) == 0:
+            self.logger.log_image(key="imgs", images=[real_A, real_B, fake_A, fake_B],
+                                  step=max(0, self.global_step - 1), caption=['A', 'B', 'FA', 'FB'],
+                                  file_type=["jpg"] * 4)
 
         return loss_G
 
@@ -135,7 +137,8 @@ class CycleGAN(pl.LightningModule):
         fake_B = self.generator_AB(real_A)
 
         # Real loss
-        loss_real = self.criterion_GAN(self.discriminator_B(real_B), valid)
+        loss_real = (self.criterion_GAN(self.discriminator_B(real_B), valid) +
+                     self.criterion_GAN(self.discriminator_B(real_A), fake)) / 2
         # Fake loss (on batch of previously generated samples)
         loss_fake = self.criterion_GAN(self.discriminator_B(fake_B), fake)
         # Total loss
@@ -154,7 +157,8 @@ class CycleGAN(pl.LightningModule):
         fake_A = self.generator_BA(real_B)
 
         # Real loss
-        loss_real = self.criterion_GAN(self.discriminator_A(real_A), valid)
+        loss_real = (self.criterion_GAN(self.discriminator_A(real_A), valid) +
+                     self.criterion_GAN(self.discriminator_A(real_B), fake)) / 2
         # Fake loss (on batch of previously generated samples)
         loss_fake = self.criterion_GAN(self.discriminator_A(fake_A), fake)
         # Total loss
@@ -212,7 +216,7 @@ class GeneratorResNet(nn.Module):
         model = [
             nn.ReflectionPad2d(channels),
             nn.Conv2d(channels, out_features, 7),
-            nn.InstanceNorm2d(out_features),
+            # nn.InstanceNorm2d(out_features),
             nn.ReLU(inplace=True),
         ]
         in_features = out_features
@@ -222,7 +226,7 @@ class GeneratorResNet(nn.Module):
             out_features *= 2
             model += [
                 nn.Conv2d(in_features, out_features, 3, stride=2, padding=1),
-                nn.InstanceNorm2d(out_features),
+                # nn.InstanceNorm2d(out_features),
                 nn.ReLU(inplace=True),
             ]
             in_features = out_features
@@ -237,18 +241,22 @@ class GeneratorResNet(nn.Module):
             model += [
                 nn.Upsample(scale_factor=2),
                 nn.Conv2d(in_features, out_features, 3, stride=1, padding=1),
-                nn.InstanceNorm2d(out_features),
+                # nn.InstanceNorm2d(out_features),
                 nn.ReLU(inplace=True),
             ]
             in_features = out_features
 
         # Output layer
-        model += [nn.ReflectionPad2d(channels), nn.Conv2d(out_features, channels, 7), nn.Tanh()]
+        model += [
+            nn.ReflectionPad2d(channels),
+            nn.Conv2d(out_features, channels, 7),
+            nn.Tanh()
+        ]
 
         self.model = nn.Sequential(*model)
 
     def forward(self, x):
-        return self.model(x)
+        return (self.model(x) + 1) / 2
 
 
 ##############################

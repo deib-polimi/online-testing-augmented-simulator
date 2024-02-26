@@ -22,9 +22,11 @@ def gen_video(folder: pathlib.Path):
 
 
 if __name__ == '__main__':
-    folder = pathlib.Path("../log/gan_rainy_pony")
+    folder = pathlib.Path("../log/sunset_cow")
     # gen_video(folder)
 
+
+    # Add plotting steering angle
     before_folder = folder.joinpath("before")
     after_folder = folder.joinpath("after")
     before_images = [x for x in sorted(list(before_folder.iterdir())) if x.suffix == '.jpg']
