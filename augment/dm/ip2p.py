@@ -23,7 +23,7 @@ class InstructPix2Pix:
 
     def forward(self, x):
         return self.pipe(prompt=self.prompt, image=x, num_images_per_prompt=1,
-                         num_inference_steps=50, guidance_scale=10,
+                         num_inference_steps=30, guidance_scale=10,
                          image_guidance_scale=self.guidance, output_type='pt').images
 
     def __call__(self, x):

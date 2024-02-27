@@ -42,7 +42,7 @@ checkpoint = "lake_sunny_day_60_0.ckpt"
 
 prompt = "make it rainy"
 guidance = 1.5
-n_steps = 100
+n_steps = 10000
 
 # torch.set_default_device(DEFAULT_DEVICE)
 
