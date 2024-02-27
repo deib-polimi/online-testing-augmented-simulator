@@ -6,6 +6,7 @@ from udacity.action import UdacityAction
 from udacity.observation import UdacityObservation
 from utils.logger import CustomLogger
 
+
 class UdacityGym(gym.Env):
     """
     Gym interface for udacity simulator
@@ -18,6 +19,7 @@ class UdacityGym(gym.Env):
     def __init__(
             self,
             simulator,
+            track: str,
             max_steering: float = 1.0,
             max_throttle: float = 1.0,
             input_shape: Tuple[int, int, int] = (3, 160, 320),
@@ -57,21 +59,18 @@ class UdacityGym(gym.Env):
         observation = self.observe()
 
         # TODO: fix the two Falses
-        return observation, observation.cte, False, False, {}
+        return observation, observation.cte, False, False, {
+            'events': self.simulator.sim_state['events'],
+            'episode_metrics': self.simulator.sim_state['episode_metrics'],
+        }
 
-    def reset(
-            self,
-            skip_generation: bool = False,
-            track_string: Union[str, None] = None,
-    ) -> tuple[UdacityObservation, dict[str, Any]]:
+    def reset(self, **kwargs) -> tuple[UdacityObservation, dict[str, Any]]:
 
+        self.simulator.pause()
         # TODO: choose scene at reset
-        observation, info = self.simulator.reset(
-            # skip_generation=skip_generation,
-            # track_string=track_string,
-        )
+        observation, info = self.simulator.reset(kwargs['track'])
 
-        # TODO: Add track choice
+        self.simulator.resume()
 
         return observation, info
 

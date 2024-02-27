@@ -31,8 +31,6 @@ class LaneKeepingAgent:
             callback(observation)
         for callback in self.transform_callbacks:
             observation = callback(observation)
-        # TODO: change to variable or class attribute
-        # prediction = self.model(torchvision.transforms.ToTensor()(observation.input_image).to("cuda:1"))
         prediction = self.model(torchvision.transforms.ToTensor()(observation.input_image).to(DEFAULT_DEVICE))
         action = UdacityAction(steering_angle=prediction.item() * 1.4, throttle=0.2)
         for callback in self.after_action_callbacks:
@@ -127,8 +125,6 @@ class TransformObservationCallback(AgentCallback):
 
     def __call__(self, observation: UdacityObservation, *args, **kwargs):
         super().__call__(observation, *args, **kwargs)
-        # Change with parameter
-        # augmented_image: torch.Tensor = self.transformation(torchvision.transforms.ToTensor()(observation.input_image).to("cuda:1"))
         augmented_image: torch.Tensor = self.transformation(
             torchvision.transforms.ToTensor()(observation.input_image).to(DEFAULT_DEVICE)
         )

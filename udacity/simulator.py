@@ -51,7 +51,11 @@ class UdacitySimulator:
     def resume(self):
         self.sim_state['paused'] = False
 
-    def reset(self):
+    # # TODO: add other track properties
+    # def set_track(self, track_name):
+    #     self.sim_state['track'] = track_name
+
+    def reset(self, new_track_name: str):
         observation = UdacityObservation(
             input_image=None,
             position=(0.0, 0.0, 0.0),
@@ -67,6 +71,10 @@ class UdacitySimulator:
         )
         self.sim_state['observation'] = observation
         self.sim_state['action'] = action
+        # TODO: Change new track name to enum
+        self.sim_state['track'] = new_track_name
+        self.sim_state['events'] = []
+        self.sim_state['episode_metrics'] = None
 
         return observation, {}
 
@@ -83,6 +91,10 @@ class UdacitySimulator:
 
 
 simulator_state = {
-    # 'observation': None,
-    # 'action': None,
+    'observation': None,
+    'action': None,
+    'paused': False,
+    'track': None,
+    'events': [],
+    'episode_metrics': None,
 }

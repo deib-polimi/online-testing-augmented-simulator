@@ -37,6 +37,9 @@ class UdacityExecutor:
         )
         self.sio.on('connect')(self.on_connect)
         self.sio.on('car_telemetry')(self.on_telemetry)
+        self.sio.on('episode_metrics')(self.on_episode_metrics)
+        self.sio.on('episode_events')(self.on_episode_events)
+        self.sio.on('episode_event')(self.on_episode_event)
 
         # Simulator logging
         self.logger = CustomLogger(str(self.__class__))
@@ -69,9 +72,31 @@ class UdacityExecutor:
             self.send_pause()
         else:
             self.send_resume()
+        track = self.sim_state.get('track', None)
+        if track:
+            self.send_track(track)
+            self.sim_state['track'] = None
 
     def on_connect(self):
         self.logger.info("Udacity client connected")
+        track = self.sim_state.get('track', None)
+        # TODO: do it in a better way
+        while not track:
+            time.sleep(1)
+            track = self.sim_state.get('track', None)
+        self.send_track(track)
+        self.sim_state['track'] = None
+
+    def on_episode_metrics(self, data):
+        self.logger.info(f"episode metrics {data}")
+        self.sim_state['episode_metrics'] = data
+
+    def on_episode_events(self, data):
+        self.logger.info(f"episode events {data}")
+
+    def on_episode_event(self, data):
+        self.logger.info(f"episode event {data}")
+        self.sim_state['events'].append(data)
 
     def send_control(self) -> None:
         action: UdacityAction = self.sim_state.get('action', None)
@@ -90,6 +115,9 @@ class UdacityExecutor:
 
     def send_resume(self):
         self.sio.emit("resume_sim", skip_sid=True)
+
+    def send_track(self, track):
+        self.sio.emit("new_episode", data={"track_name": track}, skip_sid=True)
 
     def start(self):
         # Start Socket IO Server in separate thread
