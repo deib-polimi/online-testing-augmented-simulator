@@ -12,6 +12,8 @@ from transformers import SegformerFeatureExtractor, SegformerForSemanticSegmenta
 from PIL import Image
 from collections import namedtuple
 
+from utils.conf import DEFAULT_DEVICE
+
 cityscapes_palette = [[0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [0, 0, 0], [111, 74, 0], [81, 0, 81], [128, 64, 128],
                       [244, 35, 232], [250, 170, 160], [230, 150, 140], [70, 70, 70], [102, 102, 156], [190, 153, 153],
                       [180, 165, 180], [150, 100, 100], [150, 120, 90], [153, 153, 153], [153, 153, 153],
@@ -27,7 +29,7 @@ class SegFormer(nn.Module):
 
         self.model_name = "nvidia/segformer-b5-finetuned-cityscapes-1024-1024"
         self.processor = SegformerImageProcessor.from_pretrained(self.model_name)
-        self.model = SegformerForSemanticSegmentation.from_pretrained(self.model_name)
+        self.model = SegformerForSemanticSegmentation.from_pretrained(self.model_name).to(DEFAULT_DEVICE)
 
     def forward(self, image_path):
         # url = "http://images.cocodataset.org/val2017/000000039769.jpg"
@@ -37,7 +39,7 @@ class SegFormer(nn.Module):
         # logits = outputs.logits
 
         image = Image.open(image_path)
-        pixel_values = self.processor(image, return_tensors="pt").pixel_values.to("cpu")
+        pixel_values = self.processor(image, return_tensors="pt").pixel_values.to(DEFAULT_DEVICE)
 
         with torch.no_grad():
             outputs = self.model(pixel_values)
