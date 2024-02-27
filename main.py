@@ -42,7 +42,7 @@ checkpoint = "lake_sunny_day_60_0.ckpt"
 
 prompt = "make it rainy"
 guidance = 1.5
-n_steps = 200
+n_steps = 100
 
 # torch.set_default_device(DEFAULT_DEVICE)
 
@@ -146,7 +146,7 @@ for prompt in ["make it rainy", "make it foggy", "make it cloudy", "make it fogg
 
         # TODO: before calling reset. Save info
         # TODO: track is hardcoded
-        json.dump(info, open(RESULT_DIR.joinpath(f"{run_name}/info.json", "w")))
+        json.dump(info, open(RESULT_DIR.joinpath(f"{run_name}/info.json"), "w"))
         # TODO: save automatically from agent. It is the component that automatically know that episode ended
         before_action_callbacks[1].save()
         after_action_callbacks[0].save()
