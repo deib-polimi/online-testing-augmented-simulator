@@ -40,6 +40,8 @@ class UdacityExecutor:
         self.sio.on('episode_metrics')(self.on_episode_metrics)
         self.sio.on('episode_events')(self.on_episode_events)
         self.sio.on('episode_event')(self.on_episode_event)
+        self.sio.on('sim_paused')(self.on_sim_paused)
+        self.sio.on('sim_resumed')(self.on_sim_resumed)
 
         # Simulator logging
         self.logger = CustomLogger(str(self.__class__))
@@ -87,6 +89,13 @@ class UdacityExecutor:
         self.send_track(track)
         self.sim_state['track'] = None
 
+    def on_sim_paused(self):
+        self.sim_state['sim_state'] = 'paused'
+
+    def on_sim_resumed(self):
+        # TODO: change 'running' with ENUM
+        self.sim_state['sim_state'] = 'running'
+
     def on_episode_metrics(self, data):
         self.logger.info(f"episode metrics {data}")
         self.sim_state['episode_metrics'] = data
@@ -112,9 +121,19 @@ class UdacityExecutor:
 
     def send_pause(self):
         self.sio.emit("pause_sim", skip_sid=True)
+        # TODO: this loop is to make an async api synchronous
+        # We wait the confirmation of the pause command
+        while self.sim_state.get('sim_state', '') != 'paused':
+            # TODO: modify the sleeping time with constant
+            time.sleep(0.05)
 
     def send_resume(self):
         self.sio.emit("resume_sim", skip_sid=True)
+        # TODO: this loop is to make an async api synchronous
+        # We wait the confirmation of the resume command
+        while self.sim_state.get('sim_state', '') != 'resumed':
+            # TODO: modify the sleeping time with constant
+            time.sleep(0.05)
 
     def send_track(self, track):
         self.sio.emit("new_episode", data={"track_name": track}, skip_sid=True)

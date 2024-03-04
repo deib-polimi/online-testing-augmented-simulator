@@ -142,7 +142,7 @@ for prompt in ["make it rainy", "make it foggy", "make it cloudy", "make it fogg
             with torch.inference_mode():
                 action = agent(observation)
                 observation, reward, terminated, truncated, info = env.step(action)
-                time.sleep(0.1)
+                time.sleep(0.0)
 
         # TODO: before calling reset. Save info
         # TODO: track is hardcoded
@@ -157,4 +157,5 @@ for prompt in ["make it rainy", "make it foggy", "make it cloudy", "make it fogg
 # TODO: Generate video
 # TODO: Error analysis
 # TODO: Timestamp of metric is wrong. Value is wrong
+# TODO: Add pause and pause ack in the simulator before making action with agent
 env.close()
