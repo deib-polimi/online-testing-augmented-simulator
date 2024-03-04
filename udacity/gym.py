@@ -66,11 +66,7 @@ class UdacityGym(gym.Env):
 
     def reset(self, **kwargs) -> tuple[UdacityObservation, dict[str, Any]]:
 
-        self.simulator.pause()
-        # TODO: choose scene at reset
         observation, info = self.simulator.reset(kwargs['track'])
-
-        self.simulator.resume()
 
         return observation, info
 

@@ -1,4 +1,5 @@
 import pathlib
+import time
 from multiprocessing import Manager
 
 import socketio
@@ -44,12 +45,25 @@ class UdacitySimulator:
     def observe(self):
         return self.sim_state['observation']
 
+    # TODO: add a sync parameter in pause method. if sync, the method waits for the pause response
     def pause(self):
         # TODO: change 'pause' with constant
         self.sim_state['paused'] = True
+        # TODO: this loop is to make an async api synchronous
+        # We wait the confirmation of the pause command
+        while self.sim_state.get('sim_state', '') != 'paused':
+            # TODO: modify the sleeping time with constant
+            # print("waiting for pause...")
+            time.sleep(0.1)
+        # self.logger.info("exiting pause")
 
     def resume(self):
         self.sim_state['paused'] = False
+        # TODO: this loop is to make an async api synchronous
+        # We wait the confirmation of the resume command
+        while self.sim_state.get('sim_state', '') != 'running':
+            # TODO: modify the sleeping time with constant
+            time.sleep(0.1)
 
     # # TODO: add other track properties
     # def set_track(self, track_name):

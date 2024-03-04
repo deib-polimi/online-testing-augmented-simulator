@@ -17,9 +17,11 @@ from utils.conf import DEFAULT_DEVICE
 
 class LaneKeepingAgent:
 
-    def __init__(self, model, before_action_callbacks=None, after_action_callbacks=None, transform_callbacks=None):
+    def __init__(self, model, before_action_callbacks=None, after_action_callbacks=None, transform_callbacks=None,
+                 shadow_mode: bool = True):
         self.after_action_callbacks = after_action_callbacks
         self.model = model
+        self.shadow_mode = shadow_mode
         self.before_action_callbacks = before_action_callbacks if before_action_callbacks is not None else []
         self.after_action_callbacks = after_action_callbacks if after_action_callbacks is not None else []
         self.transform_callbacks = transform_callbacks if transform_callbacks is not None else []
@@ -29,12 +31,19 @@ class LaneKeepingAgent:
             return UdacityAction(steering_angle=0.0, throttle=0.0)
         for callback in self.before_action_callbacks:
             callback(observation)
+        if self.shadow_mode:
+            shadow_prediction = self.model(
+                torchvision.transforms.ToTensor()(observation.input_image).to(DEFAULT_DEVICE))
+            shadow_action = UdacityAction(steering_angle=shadow_prediction.item() * 1.4, throttle=0.2)
         for callback in self.transform_callbacks:
-            observation = callback(observation)
+            callback(observation)
         prediction = self.model(torchvision.transforms.ToTensor()(observation.input_image).to(DEFAULT_DEVICE))
         action = UdacityAction(steering_angle=prediction.item() * 1.4, throttle=0.2)
         for callback in self.after_action_callbacks:
-            callback(observation, action=action)
+            if self.shadow_mode:
+                callback(observation, action=action, shadow_action=shadow_action)
+            else:
+                callback(observation, action=action)
         return action
 
     def __call__(self, observation: UdacityObservation):
@@ -101,6 +110,9 @@ class LogObservationCallback(AgentCallback):
         if 'action' in kwargs.keys():
             metrics['predicted_steering_angle'] = kwargs['action'].steering_angle
             metrics['predicted_throttle'] = kwargs['action'].throttle
+        if 'shadow_action' in kwargs.keys():
+            metrics['shadow_predicted_steering_angle'] = kwargs['shadow_action'].steering_angle
+            metrics['shadow_predicted_throttle'] = kwargs['shadow_action'].throttle
         self.logs.append(metrics)
 
         if self.enable_pygame_logging:
@@ -129,4 +141,4 @@ class TransformObservationCallback(AgentCallback):
             torchvision.transforms.ToTensor()(observation.input_image).to(DEFAULT_DEVICE)
         )
         observation.input_image = (augmented_image.permute(1, 2, 0).detach().cpu().numpy() * 255).astype(np.uint8)
-        return observation
+        # return observation
