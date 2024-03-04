@@ -32,24 +32,17 @@ class SegFormer(nn.Module):
         self.model = SegformerForSemanticSegmentation.from_pretrained(self.model_name).to(DEFAULT_DEVICE)
 
     def forward(self, image_path):
-        # url = "http://images.cocodataset.org/val2017/000000039769.jpg"
-        # image = Image.open(requests.get(url, stream=True).raw)
-        # inputs = self.feature_extractor(images=image, return_tensors="pt")
-        # outputs = self.model(**inputs)
-        # logits = outputs.logits
-
         image = Image.open(image_path)
         pixel_values = self.processor(image, return_tensors="pt").pixel_values.to(DEFAULT_DEVICE)
 
         with torch.no_grad():
             outputs = self.model(pixel_values)
-            # logits = outputs.logit
 
-        predicted_segmentation_map = \
-            self.processor.post_process_semantic_segmentation(outputs, target_sizes=[image.size[::-1]])[0]
+        predicted_segmentation_map = self.processor.post_process_semantic_segmentation(
+            outputs,
+            target_sizes=[image.size[::-1]]
+        )[0]
         predicted_segmentation_map = predicted_segmentation_map.cpu().numpy()
-
-        print(predicted_segmentation_map)
 
         colored_segmentation_map = np.zeros((predicted_segmentation_map.shape[0],
                                              predicted_segmentation_map.shape[1], 3),
