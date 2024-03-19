@@ -13,8 +13,6 @@ from utils.logger import CustomLogger
 
 
 class UdacityExecutor:
-    # TODO: avoid cycles
-    from udacity.simulator import UdacitySimulator
 
     def __init__(
             self,
