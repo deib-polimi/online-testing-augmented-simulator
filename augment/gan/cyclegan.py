@@ -1,44 +1,11 @@
 import itertools
 import random
 from typing import Any, Tuple
-
 import lightning as pl
 import numpy as np
 import torch
 import torch.nn as nn
-from torch.autograd import Variable
-from torchvision.models import vgg19, VGG19_Weights
-
-
-class ReplayBuffer:
-    def __init__(self, max_size=50):
-        assert max_size > 0, "Empty buffer or trying to create a black hole. Be careful."
-        self.max_size = max_size
-        self.data = []
-
-    def push_and_pop(self, data):
-        to_return = []
-        for element in data.data:
-            element = torch.unsqueeze(element, 0)
-            if len(self.data) < self.max_size:
-                self.data.append(element)
-                to_return.append(element)
-            else:
-                if random.uniform(0, 1) > 0.5:
-                    i = random.randint(0, self.max_size - 1)
-                    to_return.append(self.data[i].clone())
-                    self.data[i] = element
-                else:
-                    to_return.append(element)
-        return Variable(torch.cat(to_return))
-
-
-def get_vgg():
-    vgg = vgg19(weights=VGG19_Weights.IMAGENET1K_V1).features[:21]
-    for i, layer in enumerate(vgg):
-        if layer.__class__ == torch.nn.modules.activation.ReLU:
-            layer.inplace = False
-    return vgg
+from augment.gan.module import AttnBlock
 
 
 class CycleGAN(pl.LightningModule):
@@ -46,10 +13,6 @@ class CycleGAN(pl.LightningModule):
         super().__init__()
         self.save_hyperparameters()
         self.learning_rate = learning_rate
-        # self.sample_dir = sample_dir
-        # self.vgg = get_vgg()
-        # for param in self.vgg.parameters():
-        #     param.requires_grad = False
         self.generator_AB = GeneratorResNet(input_shape, 8)
         self.generator_BA = GeneratorResNet(input_shape, 8)
         self.discriminator_A = Discriminator(input_shape)
@@ -70,7 +33,6 @@ class CycleGAN(pl.LightningModule):
         return self.generator_AB(x)
 
     def training_step(self, batch, batch_idx):
-
         g_opt, da_opt, db_opt = self.optimizers()
 
         g_loss = self._generator_training_step(batch, batch_idx)
@@ -206,13 +168,12 @@ class ResidualBlock(nn.Module):
 
 
 class GeneratorResNet(nn.Module):
-    def __init__(self, input_shape, num_residual_blocks):
+    def __init__(self, input_shape, num_residual_blocks, out_features: int = 64, attention: bool = False):
         super(GeneratorResNet, self).__init__()
 
         channels = input_shape[0]
 
         # Initial convolution block
-        out_features = 64
         model = [
             nn.ReflectionPad2d(channels),
             nn.Conv2d(channels, out_features, 7),
@@ -231,9 +192,15 @@ class GeneratorResNet(nn.Module):
             ]
             in_features = out_features
 
+        if attention:
+            model += [AttnBlock(out_features)]
+
         # Residual blocks
         for _ in range(num_residual_blocks):
             model += [ResidualBlock(out_features)]
+
+        if attention:
+            model += [AttnBlock(out_features)]
 
         # Upsampling
         for _ in range(2):

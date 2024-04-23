@@ -15,7 +15,8 @@ from udacity.gym import UdacityGym, UdacityAction
 from udacity.simulator import UdacitySimulator
 import torchvision.transforms as t
 
-from utils.conf import DEFAULT_DEVICE, RESULT_DIR
+from utils.conf import DEFAULT_DEVICE
+from utils.path_utils import RESULT_DIR
 
 
 # TODO: fix parameter names

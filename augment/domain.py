@@ -6,6 +6,6 @@ COUNTRIES = ["usa", "china", "japan", "australia", "italy", "france", "canada", 
 CITIES = ["new york", "san francisco", "chicago", "los angeles", "beijing", "tokyo", "sidney", "rome", "paris",
           "london", "toronto", "el cairo", "berlin", "munich", "moscow"]
 LOCATIONS = ["coastal area", "desert area", "mountain area", "rural area", "seaside area", "lake area", "forest area"]
-TIME = ["morning", "afternoon", "evening", "night", "sunset", "dawn", "dusk", "twilight"]
+TIMES = ["morning", "afternoon", "evening", "night", "sunset", "dawn", "dusk", "twilight"]
 
 

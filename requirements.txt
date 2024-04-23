@@ -6,9 +6,10 @@ lightning==2.1.4
 torchinfo==1.8.0
 
 # Huggingface Diffusers
-diffusers==0.26.3
+diffusers==0.27.2
 transformers==4.37.2
 accelerate
+controlnet-aux==0.0.7
 
 # Online Learning Environment
 gymnasium==0.29.1
@@ -31,9 +32,17 @@ eventlet==0.35.1
 pygame==2.5.2
 
 # Loggin and data management
-pandas==2.2.0
+pandas==1.5.3
 
 # Video generation
 imageio==2.33.1
 imageio[pyav]==2.33.1
 imageio[ffmpeg]==2.33.1
+
+# Data analysis
+tsnecuda==3.0.1
+matplotlib
+seaborn
+
+# Image quality assessment
+pyiqa==0.1.10

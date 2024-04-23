@@ -16,20 +16,21 @@ from udacity.gym import UdacityGym, UdacityAction
 from udacity.simulator import UdacitySimulator
 import torchvision.transforms as t
 
-from utils.conf import DEFAULT_DEVICE, RESULT_DIR
+from utils.conf import DEFAULT_DEVICE
+from utils.path_utils import RESULT_DIR
 
 
 # TODO: fix parameter names
 def get_ip2p_callbacks(simulator, run_name, prompt, guidance):
     pause_callback = PauseSimulationCallback(simulator=simulator)
     log_before_callback = LogObservationCallback(path=RESULT_DIR.joinpath(f"{run_name}/before"))
-    # ip2p = InstructPix2Pix(prompt, guidance=guidance)
-    # augmentation = NNAugmentation(run_name, ip2p)
-    # transform_callback = TransformObservationCallback(augmentation)
+    ip2p = InstructPix2Pix(prompt, guidance=guidance)
+    augmentation = NNAugmentation(run_name, ip2p)
+    transform_callback = TransformObservationCallback(augmentation)
     log_after_callback = LogObservationCallback(path=RESULT_DIR.joinpath(f"{run_name}/after"),
                                                 enable_pygame_logging=True)
     resume_callback = ResumeSimulationCallback(simulator=simulator)
-    return [pause_callback, log_before_callback], [resume_callback], [log_after_callback]
+    return [pause_callback, log_before_callback], [transform_callback, resume_callback], [log_after_callback]
 
 
 # This file represents an experimental run

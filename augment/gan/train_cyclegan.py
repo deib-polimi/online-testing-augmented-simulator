@@ -13,7 +13,8 @@ from lightning.pytorch.loggers import WandbLogger
 from torch.utils.data import DataLoader, Dataset
 
 from augment.gan.cyclegan import CycleGAN
-from utils.conf import DEFAULT_DEVICE, PROJECT_DIR
+from utils.conf import DEFAULT_DEVICE
+from utils.path_utils import PROJECT_DIR
 
 
 # TODO: move somewhere else
@@ -48,16 +49,16 @@ if __name__ == '__main__':
     max_epochs = 50
     accelerator = "gpu" if "cuda" in DEFAULT_DEVICE else "cpu"
     # TODO: modify folder domain a and b
-    folder_domain_a = PROJECT_DIR.joinpath('log', 'sunset_cow', 'before')
-    folder_domain_b = PROJECT_DIR.joinpath('log', 'sunset_cow', 'after')
+    folder_domain_a = PROJECT_DIR.joinpath('log', 'rainy', 'before')
+    folder_domain_b = PROJECT_DIR.joinpath('log', 'rainy', 'after')
 
     cyclegan = CycleGAN()
     # cyclegan = torch.compile(cyclegan, mode="max-autotune")
 
     # Model path
     # TODO: find better names
-    model_path = PROJECT_DIR.joinpath(f"sunset.ckpt")
-    output_folder = PROJECT_DIR.joinpath(f"sunset")
+    model_path = PROJECT_DIR.joinpath(f"rainy")
+    output_folder = PROJECT_DIR.joinpath(f"rainy_3")
     output_folder.mkdir(parents=True, exist_ok=True)
 
     dataset = ImagePairDataset(
@@ -77,7 +78,7 @@ if __name__ == '__main__':
 
     checkpoint_callback = ModelCheckpoint(
         dirpath=model_path,
-        filename="sunset_{epoch}.ckpt",
+        filename="rainy_3_{epoch}.ckpt",
         save_on_train_epoch_end=True,
         every_n_epochs=5,
         save_top_k=-1,

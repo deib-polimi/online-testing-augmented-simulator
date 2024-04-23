@@ -24,7 +24,7 @@ port = 4567
 
 simulator_exe_path = "simulator/udacity.x86_64"
 checkpoint = "lake_sunny_day_60_0.ckpt"
-run_name = "gan_sunset_cow"
+run_name = "rainy_coww"
 
 # torch.set_default_device(DEFAULT_DEVICE)
 
@@ -47,7 +47,7 @@ model.load_state_dict(torch.load(checkpoint, map_location=lambda storage, loc: s
 pause_callback = PauseSimulationCallback(simulator=simulator)
 log_before_callback = LogObservationCallback(path=f"log/{run_name}/before")
 # TODO: find better name for x
-checkpoint = "sunset.ckpt/sunset_epoch=24.ckpt.ckpt"
+checkpoint = "rainy/rainy_3_epoch=4.ckpt.ckpt"
 x = CycleGAN().to(DEFAULT_DEVICE)
 x.load_state_dict(torch.load(checkpoint, map_location=lambda storage, loc: storage)['state_dict'])
 augmentation = NNAugmentation(checkpoint, x)
@@ -60,7 +60,7 @@ log_after_callback = LogObservationCallback(path=f"log/{run_name}/after", enable
 resume_callback = ResumeSimulationCallback(simulator=simulator)
 agent = LaneKeepingAgent(model.model.to(DEFAULT_DEVICE),
                          before_action_callbacks=[pause_callback, log_before_callback],
-                         transform_callbacks=[transform_callback],
+                        #  transform_callbacks=[transform_callback],
                          after_action_callbacks=[log_after_callback, resume_callback],
                          )
 
@@ -82,7 +82,7 @@ for _ in tqdm(range(2000)):
     with torch.inference_mode():
         action = agent(observation)
         observation, reward, terminated, truncated, info = env.step(action)
-        time.sleep(0.1)
+        # time.sleep(0.1)
 
 # TODO: Save episode information
 # Save all data and close experiment
