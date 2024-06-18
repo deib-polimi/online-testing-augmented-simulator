@@ -6,63 +6,101 @@ import pyiqa
 import torch
 from PIL import Image
 from tqdm.contrib.concurrent import process_map
-
+import seaborn
+import matplotlib.pyplot as plt
 from utils.conf import DEFAULT_DEVICE
-from utils.path_utils import get_images_from_folder, get_result_folders
+from utils.path_utils import get_images_from_folder, get_result_folders, get_result_folders_as_df
 
 
-# def run_on_folder(folder: pathlib.Path):
+def run_on_one_folder(approach, domain, prompt, before_folder, after_folder):
+    before_df = pd.read_csv(before_folder.joinpath("nr_iqa.csv")).fillna(0).sort_values(by="filename").set_index(
+        "filename")
+    after_df = pd.read_csv(after_folder.joinpath("nr_iqa.csv")).fillna(0).sort_values(by="filename").set_index(
+        "filename")
+    delta_df = (after_df - before_df)
+
+    before_mean = before_df.mean(numeric_only=True)
+    before_corr = before_df.corr(numeric_only=True)
+
+    after_mean = after_df.mean(numeric_only=True)
+    after_corr = after_df.corr(numeric_only=True)
+
+    delta_mean = delta_df.mean(numeric_only=True)
+    delta_corr = delta_df.corr(numeric_only=True)
+
+    df = pd.DataFrame({
+        'approach': approach,
+        'domain': domain,
+        'prompt': prompt,
+        'before_mean': before_mean,
+        'after_mean': after_mean,
+        'delta_mean': delta_mean,
+        # 'before_corr': before_corr,
+        # 'after_corr': after_corr,
+        # 'delta_corr': delta_corr,
+    }).reset_index(names=["nr_iqa"])
+
+    # seaborn.heatmap(before_corr)
+    # plt.savefig("heatmap_before.pdf")
+    # plt.clf()
+    # plt.cla()
+    # plt.close()
+    #
+    # seaborn.heatmap(after_corr)
+    # plt.savefig("heatmap_after.pdf")
+    # plt.clf()
+    # plt.cla()
+    # plt.close()
+
+    return df
+
+
+def worker_handler(args):
+    return run_on_one_folder(**args)
+
+
 if __name__ == '__main__':
 
-    for folder in [
-        pathlib.Path("/media/banana/data/results/online-testing/online/stable_diffusion_inpainting/A-street-in-italy-photo-taken-from-a-car/before"),
-        pathlib.Path("/media/banana/data/results/online-testing/online/stable_diffusion_inpainting/A-street-in-italy-photo-taken-from-a-car/after"),
-    ]:
-        # folder = pathlib.Path("/media/banana/data/results/online-testing/online/stable_diffusion_inpainting/A-street-in-netherlands-photo-taken-from-a-car/before/")
+    # Identify all folders
+    df = get_result_folders_as_df()
 
-        # 0. Run configuration
-        input_file = folder.joinpath("nr_iqa.csv")
-        # if output_file.exists():
-        #     return
-        print(folder)
+    arg_list = [{
+        'approach': approach,
+        'domain': domain,
+        'prompt': prompt,
+        'before_folder': before_folder,
+        'after_folder': after_folder,
+    } for approach, domain, prompt, before_folder, after_folder
+        in zip(df['approach'], df['domain'], df['dir_name'], df['path_before'], df['path_after'])]
 
-        df = pd.read_csv(input_file).fillna(0)
+    # worker_handler(arg_list[0])
 
-        print(df.mean(numeric_only=True))
-        print(df.corr(numeric_only=True))
+    # Run on parallel on all folders
+    # torch.multiprocessing.set_start_method('spawn')
+    df = pd.concat(process_map(worker_handler, arg_list, max_workers=8))
 
+    df.groupby(['nr_iqa', 'approach']).mean().to_csv("no_ref.csv")
 
+    df['delta_percentage'] = df['delta_mean'] / df['before_mean'] * 100
 
-    # # 1. Define set of metrics
-    # metrics = {
-    #     'brisque': pyiqa.create_metric('brisque', device=DEFAULT_DEVICE),
-    #     'niqe': pyiqa.create_metric('niqe', device=DEFAULT_DEVICE),
-    #     'clipiqa': pyiqa.create_metric('clipiqa+', device=DEFAULT_DEVICE),
-    #     'musiq-koniq': pyiqa.create_metric('musiq-koniq', device=DEFAULT_DEVICE),
-    #     'topiq_nr': pyiqa.create_metric('topiq_nr', device=DEFAULT_DEVICE),
-    # }
+    # TODO: work on the plotting part
+    g = seaborn.boxplot(data=df, x='nr_iqa', y='delta_percentage', hue='approach')
+    g.set(xlabel='Metric', ylabel='Percentage improvement (%)', ylim=(-100, 100))
+    g.axhline(y=0, linewidth=2, color='red', ls=':')
+    g.legend(bbox_to_anchor=(0.5, -0.15), loc='upper center')
+
+    # plt.show()
+    plt.tight_layout()
+    plt.savefig("after.jpg")
+    plt.clf()
+    plt.cla()
+    plt.close()
+
+    # g = seaborn.boxplot(data=df, x='nr_iqa', y='delta_percentage')
+    # g.set(xlabel='Metric', ylabel='Percentage improvement (%)', ylim=(-100, 100))
+    # g.axhline(y=0, linewidth=2, color='red', ls=':')
+    # g.legend(bbox_to_anchor=(0.5, -0.15), loc='upper center')
     #
-    # # 2. Compute metrics
-    # df = pd.DataFrame()
-    # for metric_name, metric in metrics.items():
-    #     metric_value = []
-    #     for filepath in get_images_from_folder(folder):
-    #         try:
-    #             metric_value.append(metric(Image.open(filepath)).item())
-    #         except Exception as e:
-    #             print(f"File {filepath} was not processed correctly with metric {metric_name}, error {e}")
-    #             metric_value.append(np.NaN)
-    #     df[metric_name] = np.array(metric_value)
-    #
-    # # 3. Save csv
-    # df['filename'] = [filepath.name.__str__() for filepath in get_images_from_folder(folder)]
-    # df.to_csv(output_file, index=False)
-
-# if __name__ == '__main__':
-#
-#     # Identify all folders
-#     folders = get_generation_folders()
-#
-#     # Run on parallel on all folders
-#     torch.multiprocessing.set_start_method('spawn')
-#     process_map(run_on_folder, folders, max_workers=4)
+    # # plt.show()
+    # plt.tight_layout()
+    # plt.savefig("before.jpg")

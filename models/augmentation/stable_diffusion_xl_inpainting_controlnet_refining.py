@@ -6,8 +6,9 @@ import torch
 import torchvision.transforms
 from PIL import Image
 from controlnet_aux import CannyDetector
-from diffusers import StableDiffusionInpaintPipeline, UniPCMultistepScheduler, StableDiffusionControlNetImg2ImgPipeline, \
-    ControlNetModel
+from diffusers import StableDiffusionInpaintPipeline, UniPCMultistepScheduler, \
+    StableDiffusionXLControlNetImg2ImgPipeline, \
+    ControlNetModel, StableDiffusionXLInpaintPipeline, StableDiffusionXLControlNetPipeline, AutoencoderKL
 from einops import rearrange
 
 from domains.prompt import ALL_PROMPTS
@@ -18,27 +19,34 @@ from utils.path_utils import PROJECT_DIR, RESULT_DIR, MODEL_DIR
 from utils.image_preprocess import to_pytorch_tensor
 
 
-class StableDiffusionInpaintingControlnetRefining:
+class StableDiffusionXLInpaintingControlnetRefining:
 
     def __init__(self, prompt: str, guidance: float, num_inference_step: int = 30, strength: float = 0.5,
-                 input_shape: tuple[int, int, int] = (3, 160, 320)):
+                 input_shape: tuple[int, int, int] = (3, 160, 320),
+                 checkpoint: str = "stabilityai/stable-diffusion-xl-base-1.0"):
         self.prompt = prompt
         self.guidance = guidance
         self.strength = strength
         self.num_inference_step = num_inference_step
         self.input_shape = input_shape
 
-        self.inpainting_pipe = StableDiffusionInpaintPipeline.from_pretrained(
-            "runwayml/stable-diffusion-inpainting",
+        self.inpainting_pipe = StableDiffusionXLInpaintPipeline.from_pretrained(
+            # "diffusers/stable-diffusion-xl-1.0-inpainting-0.1",
+            "stablediffusionapi/NightVision_XL",
+            # variant="fp16",
+            use_safetensors=False,
             torch_dtype=torch.bfloat16
         )
         self.inpainting_pipe.scheduler = UniPCMultistepScheduler.from_config(self.inpainting_pipe.scheduler.config)
         self.inpainting_pipe = self.inpainting_pipe.to(DEFAULT_DEVICE)
 
-        self.refining_pipe = StableDiffusionControlNetImg2ImgPipeline.from_pretrained(
-            "runwayml/stable-diffusion-v1-5",
+        self.refining_pipe = StableDiffusionXLControlNetImg2ImgPipeline.from_pretrained(
+            "stablediffusionapi/NightVision_XL",
+            # "stabilityai/stable-diffusion-xl-base-1.0",
             torch_dtype=torch.bfloat16,
-            controlnet=ControlNetModel.from_pretrained("lllyasviel/sd-controlnet-canny", torch_dtype=torch.bfloat16),
+            use_safetensors=False,
+            controlnet=ControlNetModel.from_pretrained("diffusers/controlnet-canny-sdxl-1.0",
+                                                       torch_dtype=torch.bfloat16),
         )
         self.refining_pipe.scheduler = UniPCMultistepScheduler.from_config(self.refining_pipe.scheduler.config)
         self.refining_pipe = self.refining_pipe.to(DEFAULT_DEVICE)
@@ -68,28 +76,35 @@ class StableDiffusionInpaintingControlnetRefining:
 
         # 2. Resize image to the right shape for processing
         _, h, w = self.input_shape
-        image = torchvision.transforms.functional.resize(image, (h*2, w*2))
-        mask_image = torchvision.transforms.functional.resize(mask, (h*2, w*2))
+        image = torchvision.transforms.functional.resize(image, (h * 3, w * 3))
+        mask_image = torchvision.transforms.functional.resize(mask, (h * 3, w * 3))
 
         # 3. Augment image
-        inpainted_image = self.inpainting_pipe(prompt=self.prompt, image=image, mask_image=mask_image,
-                                               negative_prompt='low quality, bad quality, blurry, cars',
-                                               height=h * 2, width=w * 2, num_inference_steps=self.num_inference_step,
-                                               guidance_scale=self.guidance, output_type='pt').images
+        inpainted_image = self.inpainting_pipe(
+            prompt=self.prompt, image=image, mask_image=mask_image,
+            negative_prompt='low quality, bad quality, blurry, cars, intersection',
+            height=h * 3, width=w * 3, num_inference_steps=self.num_inference_step,
+            guidance_scale=self.guidance, output_type='pt'
+        ).images
 
         # 4. Refining with Controlnet
         control_image = self.hint_generator(
             rearrange(image.to("cpu"), 'c h w -> h w c') * 255,
-            image_resolution=h*2,
-            detect_resolution=h*2,
+            image_resolution=h,
+            detect_resolution=h,
+            output_type="pil",
             high_threshold=300,
             low_threshold=175,
-            output_type="pil",
         )
-        refined_image = self.refining_pipe(prompt=self.prompt, image=inpainted_image, control_image=control_image,
-                                           strength=self.strength, height=h * 2, width=w * 2,
-                                           num_inference_steps=self.num_inference_step, guidance_scale=self.guidance,
-                                           output_type='pt').images
+
+        refined_image = self.refining_pipe(
+            prompt=self.prompt, image=inpainted_image, control_image=control_image,
+            negative_prompt='low quality, bad quality, blurry, cars, intersection',
+            strength=self.strength, height=h * 3, width=w * 3,
+            num_inference_steps=self.num_inference_step, guidance_scale=self.guidance,
+            controlnet_conditioning_scale=0.8,
+            output_type='pt'
+        ).images
 
         # 5. Resize to original image
         refined_image = torchvision.transforms.functional.resize(refined_image, (h, w))
@@ -104,7 +119,8 @@ if __name__ == '__main__':
 
     # 0. Generation settings
     n_runs = 10
-    base_folder = RESULT_DIR.joinpath("investigation", "offline", "stable_diffusion_inpainting_controlnet_refining")
+    base_folder = RESULT_DIR.joinpath("investigation", "offline",
+                                      "stable_diffusion_inpainting_xl_controlnet_refining_2")
     base_folder.mkdir(parents=True, exist_ok=True)
     pl.seed_everything(42)
 
@@ -113,8 +129,11 @@ if __name__ == '__main__':
 
     # 2. Compile model to speedup generation
     with torch.no_grad():
-        model = StableDiffusionInpaintingControlnetRefining(prompt="", guidance=10)
-        mask_model = SegmentationUnet.load_from_checkpoint(MODEL_DIR.joinpath("unet", "epoch_142.ckpt")).to(DEFAULT_DEVICE)
+        model = StableDiffusionXLInpaintingControlnetRefining(
+            prompt="", guidance=10, num_inference_step=100, strength=0.5,
+            checkpoint="stablediffusionapi/NightVision_XL")
+        mask_model = SegmentationUnet.load_from_checkpoint(MODEL_DIR.joinpath("unet", "epoch_142.ckpt")).to(
+            DEFAULT_DEVICE)
         mask = mask_model(to_pytorch_tensor(image).to(DEFAULT_DEVICE).unsqueeze(0)).squeeze(0)
         mask = (mask < 0.5).to(torch.float)
 
