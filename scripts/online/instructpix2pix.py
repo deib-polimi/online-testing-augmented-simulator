@@ -71,8 +71,8 @@ if __name__ == '__main__':
         agent = DaveUdacityAgent(
             checkpoint_path=checkpoint,
             before_action_callbacks=[pause_callback, log_before_callback],
-            transform_callbacks=[transform_callback, resume_callback],
-            after_action_callbacks=[log_after_callback],
+            transform_callbacks=[transform_callback],
+            after_action_callbacks=[log_after_callback, resume_callback],
         )
         return agent
 
