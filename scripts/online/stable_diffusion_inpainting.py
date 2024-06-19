@@ -10,7 +10,6 @@ from udacity_gym.agent_callback import PauseSimulationCallback, LogObservationCa
     ResumeSimulationCallback
 from domains.instruction import ALL_INSTRUCTIONS
 from models.augmentation.base import Augment
-from models.augmentation.instructpix2pix import InstructPix2Pix
 from models.augmentation.stable_diffusion_inpainting import StableDiffusionInpainting
 from utils.conf import DEFAULT_DEVICE
 from utils.path_utils import RESULT_DIR, MODEL_DIR
