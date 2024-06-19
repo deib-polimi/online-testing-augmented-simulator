@@ -9,6 +9,7 @@ from udacity_gym.agent import DaveUdacityAgent
 from udacity_gym.agent_callback import PauseSimulationCallback, LogObservationCallback, TransformObservationCallback, \
     ResumeSimulationCallback
 from domains.instruction import ALL_INSTRUCTIONS
+from domains.prompt import ALL_PROMPTS
 from models.augmentation.base import Augment
 from models.augmentation.stable_diffusion_inpainting import StableDiffusionInpainting
 from utils.conf import DEFAULT_DEVICE
@@ -78,7 +79,7 @@ if __name__ == '__main__':
 
 
     # 6. Drive
-    for prompt in ALL_INSTRUCTIONS:
+    for prompt in ALL_PROMPTS:
 
         run_name = f"online_/stable_diffusion_inpainting/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
         if RESULT_DIR.joinpath(run_name).joinpath("after", "log.csv").exists():
