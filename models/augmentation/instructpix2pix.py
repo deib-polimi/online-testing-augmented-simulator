@@ -47,7 +47,7 @@ class InstructPix2Pix:
         # 3.
         return augmented_image
 
-    def __call__(self, x):
+    def __call__(self, x , *args, **kwargs):
         return self.forward(x).detach().float().cpu()
 
 
