@@ -91,7 +91,7 @@ if __name__ == '__main__':
             guidance=guidance,
         )
 
-        observation, _ = env.reset(track="lake")
+        observation, _ = env.reset(track=f"{track}", weather=f"{weather}", daytime=f"{daytime}")
         while observation.input_image is None:
             observation = env.observe()
             time.sleep(1)
