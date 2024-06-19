@@ -8,8 +8,8 @@ from tqdm import tqdm
 from udacity_gym.agent import DaveUdacityAgent
 from udacity_gym.agent_callback import PauseSimulationCallback, LogObservationCallback, TransformObservationCallback, \
     ResumeSimulationCallback
-from augment.nn_augment import NNAugmentation
 from domains.instruction import ALL_INSTRUCTIONS
+from models.augmentation.base import Augment
 from models.augmentation.instructpix2pix import InstructPix2Pix
 from utils.conf import DEFAULT_DEVICE
 from utils.path_utils import RESULT_DIR, MODEL_DIR
@@ -60,7 +60,7 @@ def get_driving_agent(simulator: UdacitySimulator, run_name: str, prompt: str, g
     log_before_callback = LogObservationCallback(path=RESULT_DIR.joinpath(f"{run_name}", "before"))
     augmentation_model.prompt = prompt
     augmentation_model.guidance = guidance
-    augmentation = NNAugmentation(run_name, augmentation_model)
+    augmentation = Augment(run_name, augmentation_model)
     transform_callback = TransformObservationCallback(augmentation)
     log_after_callback = LogObservationCallback(
         path=RESULT_DIR.joinpath(f"{run_name}", "before"), enable_pygame_logging=True

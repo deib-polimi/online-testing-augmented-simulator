@@ -1,9 +1,7 @@
 import torch
 
-from augment.augment import Augmentation
 
-
-class NNAugmentation(Augmentation):
+class Augment():
 
     def __init__(self, name, model, *args, **kwargs):
         super().__init__(name, *args, **kwargs)
