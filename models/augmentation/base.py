@@ -1,3 +1,4 @@
+import PIL.Image
 import torch
 
 
@@ -7,5 +8,5 @@ class Augment():
         self.name = name
         self.model = model
 
-    def __call__(self, tensor: torch.Tensor, *args, **kwargs) -> torch.Tensor:
-        return self.model(tensor, *args, **kwargs)
+    def __call__(self, image: PIL.Image.Image, *args, **kwargs) -> torch.Tensor:
+        return self.model(image, *args, **kwargs)
