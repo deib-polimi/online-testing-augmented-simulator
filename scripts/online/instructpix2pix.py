@@ -15,93 +15,95 @@ from utils.conf import DEFAULT_DEVICE
 from utils.path_utils import RESULT_DIR, MODEL_DIR
 from utils.net_utils import is_port_in_use
 
-# 0. Experiment Configuration
-host = "127.0.0.1"
-port = 9993
-simulator_exe_path = "simulatorv2/udacity.x86_64"
-checkpoint = MODEL_DIR.joinpath("dave2", "dave2-v3.ckpt")
-n_steps = 2000
+if __name__ == '__main__':
 
-while is_port_in_use(port):
-    port = port + 1
+    # 0. Experiment Configuration
+    host = "127.0.0.1"
+    port = 9993
+    simulator_exe_path = "simulatorv2/udacity.x86_64"
+    checkpoint = MODEL_DIR.joinpath("dave2", "dave2-v3.ckpt")
+    n_steps = 2000
 
-track = "lake"
-daytime = "day"
-weather = "sunny"
+    while is_port_in_use(port):
+        port = port + 1
 
-# 1. Augmentation Model
-augmentation_model = InstructPix2Pix(prompt="", guidance=2.0)
-guidance = 2.0
+    track = "lake"
+    daytime = "day"
+    weather = "sunny"
 
-# 2. Start Simulator
-simulator = UdacitySimulator(
-    sim_exe_path=simulator_exe_path,
-    host=host,
-    port=port,
-)
-simulator.start()
+    # 1. Augmentation Model
+    augmentation_model = InstructPix2Pix(prompt="", guidance=2.0)
+    guidance = 2.0
 
-# 3. Create Gym
-env = UdacityGym(
-    simulator=simulator,
-)
-
-# 4. Start Environment
-observation, _ = env.reset(track=f"{track}", weather=f"{weather}", daytime=f"{daytime}")
-while not observation or not observation.is_ready():
-    observation = env.observe()
-    time.sleep(1)
-    print("Waiting for environment to set up...")
-print("Ready to drive!")
-
-# 5. Setup driving agent
-def get_driving_agent(simulator: UdacitySimulator, run_name: str, prompt: str, guidance: float):
-    pause_callback = PauseSimulationCallback(simulator=simulator)
-    log_before_callback = LogObservationCallback(path=RESULT_DIR.joinpath(f"{run_name}", "before"))
-    augmentation_model.prompt = prompt
-    augmentation_model.guidance = guidance
-    augmentation = Augment(run_name, augmentation_model)
-    transform_callback = TransformObservationCallback(augmentation)
-    log_after_callback = LogObservationCallback(
-        path=RESULT_DIR.joinpath(f"{run_name}", "before"), enable_pygame_logging=True
+    # 2. Start Simulator
+    simulator = UdacitySimulator(
+        sim_exe_path=simulator_exe_path,
+        host=host,
+        port=port,
     )
-    resume_callback = ResumeSimulationCallback(simulator=simulator)
-    agent = DaveUdacityAgent(
-        checkpoint_path=checkpoint,
-        before_action_callbacks=[pause_callback, log_before_callback],
-        transform_callbacks=[transform_callback, resume_callback],
-        after_action_callbacks=[log_after_callback],
-    )
-    return agent
+    simulator.start()
 
-
-# 6. Drive
-for prompt in ALL_INSTRUCTIONS:
-
-    run_name = f"online_/instructpix2pix/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
-    if RESULT_DIR.joinpath(run_name).joinpath("after", "log.csv").exists():
-        continue
-
-    agent = get_driving_agent(
+    # 3. Create Gym
+    env = UdacityGym(
         simulator=simulator,
-        run_name=run_name,
-        prompt=prompt,
-        guidance=guidance,
     )
 
-    observation, _ = env.reset(track="lake")
-    while observation.input_image is None:
+    # 4. Start Environment
+    observation, _ = env.reset(track=f"{track}", weather=f"{weather}", daytime=f"{daytime}")
+    while not observation or not observation.is_ready():
         observation = env.observe()
         time.sleep(1)
-        print("waiting for environment to set up...")
+        print("Waiting for environment to set up...")
+    print("Ready to drive!")
 
-    for _ in tqdm(range(n_steps)):
-        action = agent(observation)
-        observation, reward, terminated, truncated, info = env.step(action)
-        time.sleep(0.1)
+    # 5. Setup driving agent
+    def get_driving_agent(simulator: UdacitySimulator, run_name: str, prompt: str, guidance: float):
+        pause_callback = PauseSimulationCallback(simulator=simulator)
+        log_before_callback = LogObservationCallback(path=RESULT_DIR.joinpath(f"{run_name}", "before"))
+        augmentation_model.prompt = prompt
+        augmentation_model.guidance = guidance
+        augmentation = Augment(run_name, augmentation_model)
+        transform_callback = TransformObservationCallback(augmentation)
+        log_after_callback = LogObservationCallback(
+            path=RESULT_DIR.joinpath(f"{run_name}", "before"), enable_pygame_logging=True
+        )
+        resume_callback = ResumeSimulationCallback(simulator=simulator)
+        agent = DaveUdacityAgent(
+            checkpoint_path=checkpoint,
+            before_action_callbacks=[pause_callback, log_before_callback],
+            transform_callbacks=[transform_callback, resume_callback],
+            after_action_callbacks=[log_after_callback],
+        )
+        return agent
 
-    json.dump(info, open(RESULT_DIR.joinpath(f"{run_name}", "info.json"), "w"))
-    agent.before_action_callbacks[1].save()
-    agent.after_action_callbacks[0].save()
 
-env.close()
+    # 6. Drive
+    for prompt in ALL_INSTRUCTIONS:
+
+        run_name = f"online_/instructpix2pix/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
+        if RESULT_DIR.joinpath(run_name).joinpath("after", "log.csv").exists():
+            continue
+
+        agent = get_driving_agent(
+            simulator=simulator,
+            run_name=run_name,
+            prompt=prompt,
+            guidance=guidance,
+        )
+
+        observation, _ = env.reset(track="lake")
+        while observation.input_image is None:
+            observation = env.observe()
+            time.sleep(1)
+            print("waiting for environment to set up...")
+
+        for _ in tqdm(range(n_steps)):
+            action = agent(observation)
+            observation, reward, terminated, truncated, info = env.step(action)
+            time.sleep(0.1)
+
+        json.dump(info, open(RESULT_DIR.joinpath(f"{run_name}", "info.json"), "w"))
+        agent.before_action_callbacks[1].save()
+        agent.after_action_callbacks[0].save()
+
+    env.close()
