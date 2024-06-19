@@ -59,7 +59,7 @@ class StableDiffusionInpainting:
 
         return augmented_image
 
-    def __call__(self, image, mask):
+    def __call__(self, image, mask, *args, **kwargs):
         return to_pytorch_tensor(self.forward(image, mask).detach().float().cpu())
 
 
