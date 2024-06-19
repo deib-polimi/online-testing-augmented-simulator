@@ -1,11 +1,10 @@
+from udacity_gym import UdacitySimulator, UdacityGym
 import json
 import pathlib
 import re
 import time
 import torch
-
 from tqdm import tqdm
-from udacity_gym import UdacitySimulator, UdacityGym
 from udacity_gym.agent import DaveUdacityAgent
 from udacity_gym.agent_callback import PauseSimulationCallback, LogObservationCallback, TransformObservationCallback, \
     ResumeSimulationCallback
