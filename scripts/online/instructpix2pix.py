@@ -54,11 +54,7 @@ while not observation or not observation.is_ready():
     print("Waiting for environment to set up...")
 print("Ready to drive!")
 
-# 5. Setup Driving agent
-driving_model = UdacityDrivingModel("nvidia_dave", (3, 160, 320))
-driving_model.load_state_dict(torch.load(checkpoint, map_location=lambda storage, loc: storage)['state_dict'])
-
-
+# 5. Setup driving agent
 def get_driving_agent(simulator: UdacitySimulator, run_name: str, prompt: str, guidance: float):
     pause_callback = PauseSimulationCallback(simulator=simulator)
     log_before_callback = LogObservationCallback(path=RESULT_DIR.joinpath(f"{run_name}", "before"))
