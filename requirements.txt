@@ -16,8 +16,8 @@ controlnet-aux==0.0.7
 gymnasium==0.29.1
 
 # Open CV for image editing
-opencv-contrib-python==4.9.0.80
-opencv-python==4.9.0.80
+opencv-contrib-python==4.10.0.84
+opencv-python==4.10.0.84
 
 # Server and websockets for communication with simulator
 # Do not update, recent versions do not work
@@ -33,7 +33,7 @@ eventlet==0.35.1
 pygame==2.5.2
 
 # Loggin and data management
-pandas==1.5.3
+pandas==2.2.2
 
 # Video generation
 imageio==2.33.1

@@ -1,20 +1,19 @@
 import json
+import pathlib
 import re
 import time
-
 import torch
-from tqdm import tqdm
 
-from ads.agent import LaneKeepingAgent, PauseSimulationCallback, ResumeSimulationCallback, LogObservationCallback, \
-    TransformObservationCallback
+from tqdm import tqdm
+from udacity_gym import UdacitySimulator, UdacityGym
+from udacity_gym.agent import DaveUdacityAgent
+from udacity_gym.agent_callback import PauseSimulationCallback, LogObservationCallback, TransformObservationCallback, \
+    ResumeSimulationCallback
+
 from ads.model import UdacityDrivingModel
 from augment.nn_augment import NNAugmentation
 from domains.instruction import ALL_INSTRUCTIONS
-from domains.prompt import ALL_PROMPTS
 from models.augmentation.instructpix2pix import InstructPix2Pix
-from models.augmentation.stable_diffusion_inpainting import StableDiffusionInpainting
-from udacity.gym import UdacityGym
-from udacity.simulator import UdacitySimulator
 from utils.conf import DEFAULT_DEVICE
 from utils.path_utils import RESULT_DIR, MODEL_DIR
 from utils.net_utils import is_port_in_use
@@ -24,10 +23,14 @@ host = "127.0.0.1"
 port = 9993
 simulator_exe_path = "simulator/udacity.x86_64"
 checkpoint = MODEL_DIR.joinpath("dave2", "dave2-v3.ckpt")
-n_steps = 2000  # Represents the number of predictions done by the driving agent
+n_steps = 2000
 
 while is_port_in_use(port):
     port = port + 1
+
+track = "lake"
+daytime = "day"
+weather = "sunny"
 
 # 1. Augmentation Model
 augmentation_model = InstructPix2Pix(prompt="", guidance=2.0)
@@ -44,12 +47,11 @@ simulator.start()
 # 3. Create Gym
 env = UdacityGym(
     simulator=simulator,
-    track="lake",
 )
 
 # 4. Start Environment
-observation, _ = env.reset(track="lake")
-while observation.input_image is None or observation.input_image.sum() == 0:
+observation, _ = env.reset(track=f"{track}", weather=f"{weather}", daytime=f"{daytime}")
+while not observation or not observation.is_ready():
     observation = env.observe()
     time.sleep(1)
     print("Waiting for environment to set up...")
@@ -62,17 +64,17 @@ driving_model.load_state_dict(torch.load(checkpoint, map_location=lambda storage
 
 def get_driving_agent(simulator: UdacitySimulator, run_name: str, prompt: str, guidance: float):
     pause_callback = PauseSimulationCallback(simulator=simulator)
-    log_before_callback = LogObservationCallback(path=RESULT_DIR.joinpath(f"{run_name}/before"))
+    log_before_callback = LogObservationCallback(path=RESULT_DIR.joinpath(f"{run_name}", "before"))
     augmentation_model.prompt = prompt
     augmentation_model.guidance = guidance
     augmentation = NNAugmentation(run_name, augmentation_model)
     transform_callback = TransformObservationCallback(augmentation)
     log_after_callback = LogObservationCallback(
-        path=RESULT_DIR.joinpath(f"{run_name}/after"), enable_pygame_logging=True
+        path=RESULT_DIR.joinpath(f"{run_name}", "before"), enable_pygame_logging=True
     )
     resume_callback = ResumeSimulationCallback(simulator=simulator)
-    agent = LaneKeepingAgent(
-        driving_model.model.to(DEFAULT_DEVICE),
+    agent = DaveUdacityAgent(
+        checkpoint_path=checkpoint,
         before_action_callbacks=[pause_callback, log_before_callback],
         transform_callbacks=[transform_callback, resume_callback],
         after_action_callbacks=[log_after_callback],
@@ -105,7 +107,7 @@ for prompt in ALL_INSTRUCTIONS:
         observation, reward, terminated, truncated, info = env.step(action)
         time.sleep(0.1)
 
-    json.dump(info, open(RESULT_DIR.joinpath(f"{run_name}/info.json"), "w"))
+    json.dump(info, open(RESULT_DIR.joinpath(f"{run_name}", "info.json"), "w"))
     agent.before_action_callbacks[1].save()
     agent.after_action_callbacks[0].save()
 
