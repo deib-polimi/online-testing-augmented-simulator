@@ -48,7 +48,7 @@ class InstructPix2Pix:
         return augmented_image
 
     def __call__(self, x , *args, **kwargs):
-        return self.forward(x).detach().float().cpu()
+        return to_pytorch_tensor(self.forward(x).detach().float().cpu())
 
 
 if __name__ == '__main__':
