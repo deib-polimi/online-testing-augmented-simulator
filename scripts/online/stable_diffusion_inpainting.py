@@ -66,7 +66,7 @@ if __name__ == '__main__':
         augmentation = Augment(run_name, augmentation_model)
         transform_callback = TransformObservationCallback(augmentation)
         log_after_callback = LogObservationCallback(
-            path=RESULT_DIR.joinpath(f"{run_name}", "before"), enable_pygame_logging=True
+            path=RESULT_DIR.joinpath(f"{run_name}", "after"), enable_pygame_logging=True
         )
         resume_callback = ResumeSimulationCallback(simulator=simulator)
         agent = DaveUdacityAgent(
