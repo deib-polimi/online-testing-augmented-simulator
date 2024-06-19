@@ -18,7 +18,7 @@ from utils.net_utils import is_port_in_use
 # 0. Experiment Configuration
 host = "127.0.0.1"
 port = 9993
-simulator_exe_path = "simulator/udacity.x86_64"
+simulator_exe_path = "simulatorv2/udacity.x86_64"
 checkpoint = MODEL_DIR.joinpath("dave2", "dave2-v3.ckpt")
 n_steps = 2000
 
