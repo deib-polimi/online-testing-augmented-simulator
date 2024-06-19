@@ -80,7 +80,7 @@ if __name__ == '__main__':
     # 6. Drive
     for prompt in ALL_INSTRUCTIONS:
 
-        run_name = f"online_/instructpix2pix/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
+        run_name = f"online/instructpix2pix/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
         if RESULT_DIR.joinpath(run_name).joinpath("after", "log.csv").exists():
             continue
 
