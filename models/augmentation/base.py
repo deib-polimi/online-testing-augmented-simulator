@@ -8,4 +8,4 @@ class Augment():
         self.model = model
 
     def __call__(self, tensor: torch.Tensor, *args, **kwargs) -> torch.Tensor:
-        return self.model(tensor.unsqueeze(0), *args, **kwargs).squeeze(0)
+        return self.model(tensor, *args, **kwargs)
