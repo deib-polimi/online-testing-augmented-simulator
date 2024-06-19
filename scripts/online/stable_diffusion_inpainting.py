@@ -81,7 +81,7 @@ if __name__ == '__main__':
     # 6. Drive
     for prompt in ALL_PROMPTS:
 
-        run_name = f"online_/stable_diffusion_inpainting/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
+        run_name = f"online/stable_diffusion_inpainting/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
         if RESULT_DIR.joinpath(run_name).joinpath("after", "log.csv").exists():
             continue
 
