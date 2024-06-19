@@ -8,8 +8,6 @@ from tqdm import tqdm
 from udacity_gym.agent import DaveUdacityAgent
 from udacity_gym.agent_callback import PauseSimulationCallback, LogObservationCallback, TransformObservationCallback, \
     ResumeSimulationCallback
-
-from ads.model import UdacityDrivingModel
 from augment.nn_augment import NNAugmentation
 from domains.instruction import ALL_INSTRUCTIONS
 from models.augmentation.instructpix2pix import InstructPix2Pix
