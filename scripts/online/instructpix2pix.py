@@ -90,6 +90,7 @@ if __name__ == '__main__':
             prompt=prompt,
             guidance=guidance,
         )
+        agent.model = agent.model.to(DEFAULT_DEVICE)
 
         observation, _ = env.reset(track=f"{track}", weather=f"{weather}", daytime=f"{daytime}")
         while observation.input_image is None:
