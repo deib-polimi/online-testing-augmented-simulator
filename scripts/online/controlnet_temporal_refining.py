@@ -15,14 +15,14 @@ from models.augmentation.stable_diffusion_inpainting import StableDiffusionInpai
 from udacity.gym import UdacityGym
 from udacity.simulator import UdacitySimulator
 from utils.conf import DEFAULT_DEVICE
-from utils.path_utils import RESULT_DIR
+from utils.path_utils import RESULT_DIR, MODEL_DIR
 from utils.net_utils import is_port_in_use
 
 # 0. Experiment Configuration
 host = "127.0.0.1"
 port = 9993
 simulator_exe_path = "simulator/udacity.x86_64"
-checkpoint = "lake_sunny_day_60_0.ckpt"
+checkpoint = MODEL_DIR.joinpath("dave2", "dave2-v3.ckpt")
 n_steps = 2000  # Represents the number of predictions done by the driving agent
 
 while is_port_in_use(port):
