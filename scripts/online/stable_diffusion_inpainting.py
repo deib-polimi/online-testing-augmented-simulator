@@ -1,3 +1,5 @@
+import itertools
+
 from udacity_gym import UdacitySimulator, UdacityGym
 import json
 import pathlib
@@ -5,7 +7,7 @@ import re
 import time
 import torch
 from tqdm import tqdm
-from udacity_gym.agent import DaveUdacityAgent
+from udacity_gym.agent import DaveUdacityAgent, EndToEndLaneKeepingAgent
 from udacity_gym.agent_callback import PauseSimulationCallback, LogObservationCallback, TransformObservationCallback, \
     ResumeSimulationCallback
 from domains.instruction import ALL_INSTRUCTIONS
@@ -20,7 +22,7 @@ if __name__ == '__main__':
 
     # 0. Experiment Configuration
     host = "127.0.0.1"
-    port = 9993
+    port = 9992
     simulator_exe_path = "simulatorv2/udacity.x86_64"
     checkpoint = MODEL_DIR.joinpath("dave2", "dave2-v3.ckpt")
     n_steps = 2000
@@ -58,7 +60,7 @@ if __name__ == '__main__':
     print("Ready to drive!")
 
     # 5. Setup driving agent
-    def get_driving_agent(simulator: UdacitySimulator, run_name: str, prompt: str, guidance: float):
+    def get_driving_agent(simulator: UdacitySimulator, run_name: str, model_name: str, prompt: str, guidance: float):
         pause_callback = PauseSimulationCallback(simulator=simulator)
         log_before_callback = LogObservationCallback(path=RESULT_DIR.joinpath(f"{run_name}", "before"))
         augmentation_model.prompt = prompt
@@ -69,24 +71,30 @@ if __name__ == '__main__':
             path=RESULT_DIR.joinpath(f"{run_name}", "after"), enable_pygame_logging=True
         )
         resume_callback = ResumeSimulationCallback(simulator=simulator)
-        agent = DaveUdacityAgent(
+        checkpoint = MODEL_DIR.joinpath(model_name, f"{model_name}.ckpt")
+        agent = EndToEndLaneKeepingAgent(
+            model_name=model_name,
             checkpoint_path=checkpoint,
             before_action_callbacks=[pause_callback, log_before_callback],
             transform_callbacks=[transform_callback],
             after_action_callbacks=[log_after_callback, resume_callback],
         )
+        agent.model.eval()
         return agent
 
-
     # 6. Drive
-    for prompt in ALL_PROMPTS:
+    for prompt, model_name in list(itertools.product(
+            ALL_PROMPTS,
+            ['dave2', 'epoch', 'chauffeur']
+    ))[::-1]:
 
-        run_name = f"online/stable_diffusion_inpainting/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
+        run_name = f"online/stable_diffusion_inpainting/{model_name}/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
         if RESULT_DIR.joinpath(run_name).joinpath("after", "log.csv").exists():
             continue
 
         agent = get_driving_agent(
             simulator=simulator,
+            model_name=model_name,
             run_name=run_name,
             prompt=prompt,
             guidance=guidance,

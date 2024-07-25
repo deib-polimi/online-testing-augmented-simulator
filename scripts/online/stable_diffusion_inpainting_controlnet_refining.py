@@ -1,110 +1,121 @@
+import itertools
+
+from udacity_gym import UdacitySimulator, UdacityGym
 import json
+import pathlib
 import re
 import time
-
 import torch
 from tqdm import tqdm
-
-from ads.agent import LaneKeepingAgent, PauseSimulationCallback, ResumeSimulationCallback, LogObservationCallback, \
-    TransformObservationCallback
-from ads.model import UdacityDrivingModel
-from augment.nn_augment import NNAugmentation
+from udacity_gym.agent import EndToEndLaneKeepingAgent
+from udacity_gym.agent_callback import PauseSimulationCallback, LogObservationCallback, TransformObservationCallback, \
+    ResumeSimulationCallback
+from domains.instruction import ALL_INSTRUCTIONS
 from domains.prompt import ALL_PROMPTS
-from models.augmentation.stable_diffusion_inpainting_controlnet_refining import StableDiffusionInpaintingControlnetRefining
-from udacity.gym import UdacityGym
-from udacity.simulator import UdacitySimulator
+from models.augmentation.base import Augment
+from models.augmentation.stable_diffusion_inpainting import StableDiffusionInpainting
+from models.augmentation.stable_diffusion_inpainting_controlnet_refining import \
+    StableDiffusionInpaintingControlnetRefining
 from utils.conf import DEFAULT_DEVICE
-from utils.path_utils import RESULT_DIR
+from utils.path_utils import RESULT_DIR, MODEL_DIR
 from utils.net_utils import is_port_in_use
 
-# 0. Experiment Configuration
-host = "127.0.0.1"
-port = 9993
-simulator_exe_path = "simulator/udacity.x86_64"
-checkpoint = "lake_sunny_day_60_0.ckpt"
-n_steps = 2000  # Represents the number of predictions done by the driving agent
+if __name__ == '__main__':
 
-while is_port_in_use(port):
-    port = port + 1
+    # 0. Experiment Configuration
+    host = "127.0.0.1"
+    port = 9995
+    simulator_exe_path = "simulatorv2/udacity.x86_64"
+    n_steps = 2000
 
-# 1. Augmentation Model
-augmentation_model = StableDiffusionInpaintingControlnetRefining(prompt="", guidance=1.0)
-guidance = 10.0
+    while is_port_in_use(port):
+        port = port + 1
 
-# 2. Start Simulator
-simulator = UdacitySimulator(
-    sim_exe_path=simulator_exe_path,
-    host=host,
-    port=port,
-)
-simulator.start()
+    track = "lake"
+    daytime = "day"
+    weather = "sunny"
 
-# 3. Create Gym
-env = UdacityGym(
-    simulator=simulator,
-    track="lake",
-)
+    # 1. Augmentation Model
+    augmentation_model = StableDiffusionInpaintingControlnetRefining(prompt="", guidance=1.0)
+    guidance = 10.0
 
-# 4. Start Environment
-observation, _ = env.reset(track="lake")
-while observation.input_image is None or observation.input_image.sum() == 0:
-    observation = env.observe()
-    time.sleep(1)
-    print("Waiting for environment to set up...")
-print("Ready to drive!")
-
-# 5. Setup Driving agent
-driving_model = UdacityDrivingModel("nvidia_dave", (3, 160, 320))
-driving_model.load_state_dict(torch.load(checkpoint, map_location=lambda storage, loc: storage)['state_dict'])
-
-
-def get_driving_agent(simulator: UdacitySimulator, run_name: str, prompt: str, guidance: float):
-    pause_callback = PauseSimulationCallback(simulator=simulator)
-    log_before_callback = LogObservationCallback(path=RESULT_DIR.joinpath(f"{run_name}/before"))
-    augmentation_model.prompt = prompt
-    augmentation_model.guidance = guidance
-    augmentation = NNAugmentation(run_name, augmentation_model)
-    transform_callback = TransformObservationCallback(augmentation)
-    log_after_callback = LogObservationCallback(
-        path=RESULT_DIR.joinpath(f"{run_name}/after"), enable_pygame_logging=True
+    # 2. Start Simulator
+    simulator = UdacitySimulator(
+        sim_exe_path=simulator_exe_path,
+        host=host,
+        port=port,
     )
-    resume_callback = ResumeSimulationCallback(simulator=simulator)
-    agent = LaneKeepingAgent(
-        driving_model.model.to(DEFAULT_DEVICE),
-        before_action_callbacks=[pause_callback, log_before_callback],
-        transform_callbacks=[transform_callback, resume_callback],
-        after_action_callbacks=[log_after_callback],
-    )
-    return agent
+    simulator.start()
 
-
-# 6. Drive
-for prompt in ALL_PROMPTS:
-
-    run_name = f"online/stable_diffusion_inpainting_controlnet_refining/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
-    if RESULT_DIR.joinpath(run_name).joinpath("after", "log.csv").exists():
-        continue
-
-    agent = get_driving_agent(
+    # 3. Create Gym
+    env = UdacityGym(
         simulator=simulator,
-        run_name=run_name,
-        prompt=prompt,
-        guidance=guidance,
     )
 
-    observation, _ = env.reset(track="lake")
-    while observation.input_image is None:
+    # 4. Start Environment
+    observation, _ = env.reset(track=f"{track}", weather=f"{weather}", daytime=f"{daytime}")
+    while not observation or not observation.is_ready():
         observation = env.observe()
         time.sleep(1)
-        print("waiting for environment to set up...")
+        print("Waiting for environment to set up...")
+    print("Ready to drive!")
 
-    for _ in tqdm(range(n_steps)):
-        action = agent(observation)
-        observation, reward, terminated, truncated, info = env.step(action)
-        time.sleep(0.1)
 
-    json.dump(info, open(RESULT_DIR.joinpath(f"{run_name}/info.json"), "w"))
-    agent.before_action_callbacks[1].save()
-    agent.after_action_callbacks[0].save()
+    # 5. Setup driving agent
+    def get_driving_agent(simulator: UdacitySimulator, run_name: str, model_name: str, prompt: str, guidance: float):
+        pause_callback = PauseSimulationCallback(simulator=simulator)
+        log_before_callback = LogObservationCallback(path=RESULT_DIR.joinpath(f"{run_name}", "before"))
+        augmentation_model.prompt = prompt
+        augmentation_model.guidance = guidance
+        augmentation = Augment(run_name, augmentation_model)
+        transform_callback = TransformObservationCallback(augmentation)
+        log_after_callback = LogObservationCallback(
+            path=RESULT_DIR.joinpath(f"{run_name}", "after"), enable_pygame_logging=True
+        )
+        resume_callback = ResumeSimulationCallback(simulator=simulator)
+        checkpoint = MODEL_DIR.joinpath(model_name, f"{model_name}.ckpt")
+        agent = EndToEndLaneKeepingAgent(
+            model_name=model_name,
+            checkpoint_path=checkpoint,
+            before_action_callbacks=[pause_callback, log_before_callback],
+            transform_callbacks=[transform_callback],
+            after_action_callbacks=[log_after_callback, resume_callback],
+        )
+        agent.model.eval()
+        return agent
 
-env.close()
+    # 6. Drive
+    for prompt, model_name in list(itertools.product(
+            ALL_PROMPTS,
+            ['dave2', 'epoch', 'chauffeur']
+    ))[::-1]:
+
+        run_name = f"online/stable_diffusion_inpainting_controlnet_refining/{model_name}/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
+        if RESULT_DIR.joinpath(run_name).joinpath("after", "log.csv").exists():
+            continue
+
+        agent = get_driving_agent(
+            simulator=simulator,
+            model_name=model_name,
+            run_name=run_name,
+            prompt=prompt,
+            guidance=guidance,
+        )
+        agent.model = agent.model.to(DEFAULT_DEVICE)
+
+        observation, _ = env.reset(track=f"{track}", weather=f"{weather}", daytime=f"{daytime}")
+        while observation.input_image is None:
+            observation = env.observe()
+            time.sleep(1)
+            print("waiting for environment to set up...")
+
+        for _ in tqdm(range(n_steps)):
+            action = agent(observation)
+            observation, reward, terminated, truncated, info = env.step(action)
+            time.sleep(0.1)
+
+        json.dump(info, open(RESULT_DIR.joinpath(f"{run_name}", "info.json"), "w"))
+        agent.before_action_callbacks[1].save()
+        agent.after_action_callbacks[0].save()
+
+    env.close()

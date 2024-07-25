@@ -75,7 +75,7 @@ class CycleGAN(pl.LightningModule):
         loss_cycle = (loss_cycle_A + loss_cycle_B) / 2
 
         # Total loss
-        loss_G = loss_GAN * 10.0 * loss_cycle + 5.0 * loss_identity
+        loss_G = 10 * loss_GAN * 5.0 * loss_cycle + 1.0 * loss_identity
 
         self.log("train/g/gan", loss_GAN, prog_bar=True)
         self.log("train/g/cycle", loss_cycle, prog_bar=True)

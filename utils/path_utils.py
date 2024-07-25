@@ -22,22 +22,34 @@ def get_images_from_folder(folder: pathlib.Path):
 # Return all folders with generated images
 def get_result_folders():
     result = []
-    result += [
-        folder.joinpath("before")
-        for folder in itertools.chain(
-            RESULT_DIR.joinpath("online", "stable_diffusion_inpainting").iterdir(),
-            RESULT_DIR.joinpath("online", "stable_diffusion_inpainting_controlnet_refining").iterdir(),
-            RESULT_DIR.joinpath("online", "instructpix2pix").iterdir(),
+    folders =  list(itertools.chain(
+        list(RESULT_DIR.joinpath("online", approach, model).iterdir())
+        for approach, model in itertools.product(
+            [
+                "stable_diffusion_inpainting",
+             "stable_diffusion_inpainting_controlnet_refining"
+             ],
+            ["dave2", "chauffeur", "epoch"],
         )
-    ]
-    result += [
-        folder.joinpath("after")
-        for folder in itertools.chain(
-            RESULT_DIR.joinpath("online", "stable_diffusion_inpainting").iterdir(),
-            RESULT_DIR.joinpath("online", "stable_diffusion_inpainting_controlnet_refining").iterdir(),
-            RESULT_DIR.joinpath("online", "instructpix2pix").iterdir(),
-        )
-    ]
+    ))[0]
+    result += [r.joinpath('before') for r in folders]
+    result += [r.joinpath('before') for r in folders]
+    # result += [
+    #     folder.joinpath("before")
+    #     for folder in itertools.chain(
+    #         RESULT_DIR.joinpath("online", "stable_diffusion_inpainting").iterdir(),
+    #         RESULT_DIR.joinpath("online", "stable_diffusion_inpainting_controlnet_refining").iterdir(),
+    #         # RESULT_DIR.joinpath("online", "instructpix2pix").iterdir(),
+    #     )
+    # ]
+    # result += [
+    #     folder.joinpath("after")
+    #     for folder in itertools.chain(
+    #         RESULT_DIR.joinpath("online", "stable_diffusion_inpainting").iterdir(),
+    #         RESULT_DIR.joinpath("online", "stable_diffusion_inpainting_controlnet_refining").iterdir(),
+    #         # RESULT_DIR.joinpath("online", "instructpix2pix").iterdir(),
+    #     )
+    # ]
     # Filter out all folders that are currently being generated
     result = sorted([r for r in result if r.joinpath("log.csv").exists()])
     return result

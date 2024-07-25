@@ -88,6 +88,7 @@ class StableDiffusionInpaintingControlnetRefining:
         )
         refined_image = self.refining_pipe(prompt=self.prompt, image=inpainted_image, control_image=control_image,
                                            strength=self.strength, height=h * 2, width=w * 2,
+                                           controlnet_conditioning_scale=0.6,
                                            num_inference_steps=self.num_inference_step, guidance_scale=self.guidance,
                                            output_type='pt').images
 
@@ -97,14 +98,15 @@ class StableDiffusionInpaintingControlnetRefining:
         return refined_image
 
     def __call__(self, image, mask):
-        return self.forward(image, mask).detach().float().cpu()
+        return to_pytorch_tensor(self.forward(image, mask).detach().float().cpu())
 
 
 if __name__ == '__main__':
 
     # 0. Generation settings
     n_runs = 10
-    base_folder = RESULT_DIR.joinpath("investigation", "offline", "stable_diffusion_inpainting_controlnet_refining")
+    # base_folder = RESULT_DIR.joinpath("investigation", "offline", "stable_diffusion_inpainting_controlnet_refining")
+    base_folder = RESULT_DIR.joinpath("investigation", "offline", "stable_diffusion_inpainting_controlnet_refining_09_06")
     base_folder.mkdir(parents=True, exist_ok=True)
     pl.seed_everything(42)
 
@@ -113,14 +115,15 @@ if __name__ == '__main__':
 
     # 2. Compile model to speedup generation
     with torch.no_grad():
-        model = StableDiffusionInpaintingControlnetRefining(prompt="", guidance=10)
+        model = StableDiffusionInpaintingControlnetRefining(prompt="", guidance=10, strength=0.9)
         mask_model = SegmentationUnet.load_from_checkpoint(MODEL_DIR.joinpath("unet", "epoch_142.ckpt")).to(DEFAULT_DEVICE)
         mask = mask_model(to_pytorch_tensor(image).to(DEFAULT_DEVICE).unsqueeze(0)).squeeze(0)
         mask = (mask < 0.5).to(torch.float)
 
         # 3. Generating images
         images = []
-        for prompt in ALL_PROMPTS:
+        # for prompt in ALL_PROMPTS:
+        for prompt in ["a street with dust storm"]:
             model.prompt = prompt
             inference_times = []
             for i in range(n_runs):

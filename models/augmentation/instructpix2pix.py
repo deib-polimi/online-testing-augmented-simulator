@@ -55,7 +55,8 @@ if __name__ == '__main__':
 
     # 0. Generation settings
     n_runs = 10
-    base_folder = RESULT_DIR.joinpath("investigation", "offline", "instructpix2pix_mid_guidance")
+    # base_folder = RESULT_DIR.joinpath("investigation", "offline", "instructpix2pix_mid_guidance")
+    base_folder = RESULT_DIR.joinpath("investigation", "offline", "instructpix2pix_30_guidance")
     base_folder.mkdir(parents=True, exist_ok=True)
     pl.seed_everything(42)
 
@@ -63,7 +64,7 @@ if __name__ == '__main__':
     image = Image.open(PROJECT_DIR.joinpath("log/snowy_pony/before/frame_00000001708015939492.jpg"))
 
     # 2. Compile model to speedup generation
-    model = InstructPix2Pix(prompt="", guidance=2.0)
+    model = InstructPix2Pix(prompt="", guidance=3.0)
     start_compile_time = time.time()
     # model.optimize()
     result = model(image)
@@ -72,7 +73,8 @@ if __name__ == '__main__':
 
     # 3. Generating images
     images = []
-    for prompt in ALL_INSTRUCTIONS:
+    # for prompt in ALL_INSTRUCTIONS:
+    for prompt in ['change season to autumn']:
         model.prompt = prompt
         inference_times = []
         for i in range(n_runs):
