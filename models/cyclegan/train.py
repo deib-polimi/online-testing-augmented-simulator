@@ -73,7 +73,7 @@ if __name__ == '__main__':
             filename=checkpoint_name,
             save_on_train_epoch_end=True,
             save_last="link",
-            train_time_interval=timedelta(hours=1),
+            # train_time_interval=timedelta(hours=1),
             save_top_k=-1,
             verbose=True,
         )

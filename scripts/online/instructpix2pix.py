@@ -86,7 +86,7 @@ if __name__ == '__main__':
     for prompt, model_name in list(itertools.product(
             ALL_INSTRUCTIONS,
             ['dave2', 'epoch', 'chauffeur']
-    ))[::-1][70:80]:
+    ))[::-1][80:95]:
 
         run_name = f"online/instructpix2pix/{model_name}/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
         if RESULT_DIR.joinpath(run_name).joinpath("after", "log.csv").exists():
