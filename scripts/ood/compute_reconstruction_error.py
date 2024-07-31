@@ -73,7 +73,7 @@ def run_on_folder(folder: pathlib.Path):
 if __name__ == '__main__':
     # Identify all folders
     # folders = get_result_folders()
-    folders = get_result_folders()
+    folders = get_result_folders()[::-1]
 
     # Run on parallel on all folders
     torch.multiprocessing.set_start_method('spawn')

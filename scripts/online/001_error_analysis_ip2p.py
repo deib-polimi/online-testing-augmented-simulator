@@ -6,38 +6,45 @@ import numpy as np
 import pandas as pd
 
 from domains.domain import DOMAIN_CATEGORIES_MAP
+from domains.instruction import ALL_INSTRUCTIONS, INSTRUCTION_TO_DOMAIN_MAP
 from domains.prompt import ALL_PROMPTS, PROMPT_TO_DOMAIN_MAP
 from utils.path_utils import RESULT_DIR
 
 if __name__ == '__main__':
 
-    error_count_domain = {}
-    col_count_domain = {}
-    oob_count_domain = {}
-    unique_sectors_domain = {}
-    max_cte_domain = {}
-    mean_cte_domain = {}
-    quality_domain = {}
-    domain_category = []
-    unique_sector = set()
+
 
     for approach, model in itertools.product([
-        'stable_diffusion_inpainting',
-        'stable_diffusion_inpainting_controlnet_refining'
+        'instructpix2pix',
     ],[
         'dave2', 'chauffeur', 'epoch'
     ]
     ):
 
+        error_count_domain = {}
+        col_count_domain = {}
+        oob_count_domain = {}
+        unique_sectors_domain = {}
+        max_cte_domain = {}
+        mean_cte_domain = {}
+        quality_domain = {}
+        domain_category = []
+        unique_sector = set()
+        domain_list = []
+        category_list = []
         print(f"{approach}")
 
-        domain_category = [DOMAIN_CATEGORIES_MAP[PROMPT_TO_DOMAIN_MAP[prompt]] for prompt in ALL_PROMPTS]
-        domains = [PROMPT_TO_DOMAIN_MAP[prompt] for prompt in ALL_PROMPTS]
+        domain_category = [DOMAIN_CATEGORIES_MAP[INSTRUCTION_TO_DOMAIN_MAP[prompt]] for prompt in ALL_INSTRUCTIONS]
+        domains = [INSTRUCTION_TO_DOMAIN_MAP[prompt] for prompt in ALL_INSTRUCTIONS]
 
-        for prompt in ALL_PROMPTS:
+        for prompt in ALL_INSTRUCTIONS:
 
-            domain = PROMPT_TO_DOMAIN_MAP[prompt]
+            domain = INSTRUCTION_TO_DOMAIN_MAP[prompt]
             run_name = f"online/{approach}/{model}/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
+
+            if not RESULT_DIR.joinpath(run_name, "after", 'vae_reconstruction.csv').exists():
+                continue
+
             ood_value = pd.read_csv(RESULT_DIR.joinpath(run_name, "after", 'vae_reconstruction.csv'))
             col_count_domain[domain] = sum([1 for x in json.load(open(RESULT_DIR.joinpath(run_name, "info.json")))['events'] if x.get('key', None) == 'collision'])
             oob_count_domain[domain] = sum([1 for x in json.load(open(RESULT_DIR.joinpath(run_name, "info.json")))['events'] if x.get('key', None) == 'out_of_track'])
@@ -60,6 +67,8 @@ if __name__ == '__main__':
                 unique_sector.add(x)
 
             unique_sectors_domain[domain] = len(unique_sector)
+            domain_list += [domain]
+            category_list += [DOMAIN_CATEGORIES_MAP[INSTRUCTION_TO_DOMAIN_MAP[prompt]]]
 
         err_df = pd.DataFrame.from_dict(data={
             'err': list(error_count_domain.values()),
@@ -69,11 +78,11 @@ if __name__ == '__main__':
             'max_cte': list(max_cte_domain.values()),
             'mean_cte': list(mean_cte_domain.values()),
             'unique_sectors': list(unique_sectors_domain.values()),
-            'domain_category': domain_category,
-            'domain': domains
+            'domain_category': category_list,
+            'domain': domain_list
         })
 
-        # print(err_df.sort_values('err'))
+        print(err_df.sort_values('err'))
         print(err_df[['mean_cte', 'quality', 'domain']])
         # print(err_df[['err', 'max_cte', 'mean_cte', 'col', 'oob', 'unique_sectors', 'quality']].max())
         # print(err_df[['err', 'max_cte', 'mean_cte', 'col', 'oob', 'unique_sectors', 'quality']].mean())

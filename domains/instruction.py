@@ -37,3 +37,12 @@ ALL_INSTRUCTIONS_FOLDER_MAP = {
     **WEATHER_INSTRUCTIONS_FOLDER_MAP, **SEASON_INSTRUCTIONS_FOLDER_MAP, **COUNTRY_INSTRUCTIONS_FOLDER_MAP,
     **CITY_INSTRUCTIONS_FOLDER_MAP, **LOCATION_INSTRUCTIONS_FOLDER_MAP, **TIME_INSTRUCTIONS_FOLDER_MAP
 }
+
+INSTRUCTION_TO_DOMAIN_MAP = {
+    **{f"Make it {x}": x for x in WEATHERS},
+    **{f"Make it {x}": x  for x in SEASONS},
+    **{f"Make it {x}": x for x in COUNTRIES},
+    **{f"Make it {x}": x  for x in CITIES},
+    **{f"Make it {x}": x  for x in LOCATIONS},
+    **{f"Make it {x}": x  for x in TIMES},
+}

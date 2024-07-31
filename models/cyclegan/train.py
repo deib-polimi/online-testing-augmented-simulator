@@ -22,26 +22,21 @@ if __name__ == '__main__':
 
     # Training settings
     version = "v2"
-    max_epochs = 40
+    max_epochs = 20
     devices = [int(DEFAULT_DEVICE.split(':')[1])]
     for prompt, approach in itertools.product(
-        [
-         # "A-street-in-greece-photo-taken-from-a-car",
-         "A-street-in-spring-season-photo-taken-from-a-car",
-         "A-street-in-italy-photo-taken-from-a-car"
-         ],
-        ["stable_diffusion_inpainting",
-         # "stable_diffusion_inpainting_controlnet_refining"
-         ]
+            [
+                "A-street-in-dust-storm-weather-photo-taken-from-a-car",
+                # "A-street-in-night-photo-taken-from-a-car",
+                # "A-street-in-autumn-photo-taken-from-a-car",
+            ],
+            [
+                "stable_diffusion_inpainting",
+                # "stable_diffusion_inpainting_controlnet_refining"
+            ]
     ):
-        # prompt = "A-street-in-autumn-season-photo-taken-from-a-car"
-        # approach = "stable_diffusion_inpainting"
-        # approach = "stable_diffusion_inpainting_controlnet_refining"
-        model_name = "dave2"
-        run_name = f"online/{approach}/{model_name}/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
-        folder_domain_a = RESULT_DIR.joinpath(run_name).joinpath("before", "image")
-        folder_domain_b = RESULT_DIR.joinpath(run_name).joinpath("after", "image")
-        model_path = MODEL_DIR.joinpath(f"online/{approach}/{model_name}/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}")
+        run_name = f"online/{approach}/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
+        model_path = MODEL_DIR.joinpath(run_name)
         checkpoint_name = "cyclegan_{version}_{epoch}_{step}"
 
         # Training process
@@ -55,11 +50,15 @@ if __name__ == '__main__':
         accelerator = "gpu" if "cuda" in DEFAULT_DEVICE else "cpu"
         input_shape = (3, 320, 160)
 
-        dataset = ImagePairDataset(
-            [x for x in folder_domain_a.iterdir() if x.suffix == '.jpg'],
-            [x for x in folder_domain_b.iterdir() if x.suffix == '.jpg'],
-            transform=torchvision.transforms.ToTensor()
-        )
+        sub_datasets = []
+        for model_name in ['dave2', 'chauffeur', 'epoch']:
+            run_name = f"online/{approach}/{model_name}/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
+            sub_datasets += [ImagePairDataset(
+                [x for x in RESULT_DIR.joinpath(run_name).joinpath("before", "image").glob("*.jpg")],
+                [x for x in RESULT_DIR.joinpath(run_name).joinpath("after", "image").glob("*.jpg")],
+                transform=torchvision.transforms.ToTensor()
+            )]
+        dataset = torch.utils.data.ConcatDataset(sub_datasets)
 
         loader = DataLoader(
             dataset,

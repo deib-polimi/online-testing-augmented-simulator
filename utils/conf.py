@@ -1,1 +1,1 @@
-DEFAULT_DEVICE = "cuda:1"
+DEFAULT_DEVICE = "cuda:0"
