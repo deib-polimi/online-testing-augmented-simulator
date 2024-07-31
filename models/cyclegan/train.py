@@ -22,7 +22,7 @@ if __name__ == '__main__':
 
     # Training settings
     version = "v2"
-    max_epochs = 20
+    max_epochs = 5
     devices = [int(DEFAULT_DEVICE.split(':')[1])]
     for prompt, approach in itertools.product(
             [
