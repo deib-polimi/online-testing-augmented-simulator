@@ -23,14 +23,14 @@ def get_images_from_folder(folder: pathlib.Path):
 def get_result_folders():
     result = []
     folders =  sum(
-        [list(RESULT_DIR.joinpath("online", approach, model).iterdir())
+        [list(RESULT_DIR.joinpath("online", "cyclegan", approach, model).iterdir())
         for approach, model in itertools.product(
             [
              "instructpix2pix",
              "stable_diffusion_inpainting",
              "stable_diffusion_inpainting_controlnet_refining",
              ],
-            ["dave2", "chauffeur", "epoch"],
+            ["dave2", "chauffeur", "epoch", "vit"],
         )], [])
     result += [r.joinpath('before') for r in folders]
     result += [r.joinpath('after') for r in folders]
@@ -54,7 +54,7 @@ def get_result_folders_as_df():
     # 1A. Process InstructPix2Pix results
     mapping = {v: k for k, v in ALL_INSTRUCTIONS_FOLDER_MAP.items()}
     for model_name in ['dave2', 'chauffeur', 'epoch']:
-        for folder in sorted(list(RESULT_DIR.joinpath("online", "instructpix2pix", model_name).iterdir())):
+        for folder in sorted(list(RESULT_DIR.joinpath("online", "cyclegan", "instructpix2pix", model_name).iterdir())):
             dir_name = folder.name
             domain = mapping[dir_name]
             domain_category = DOMAIN_CATEGORIES_MAP[domain]
@@ -91,7 +91,7 @@ def get_result_folders_as_df():
     # 1B. Process Stable Diffusion Inpainting results
     mapping = {v: k for k, v in ALL_PROMPTS_FOLDER_MAP.items()}
     for model_name in ['dave2', 'chauffeur', 'epoch']:
-        for folder in sorted(list(RESULT_DIR.joinpath("online", "stable_diffusion_inpainting", model_name).iterdir())):
+        for folder in sorted(list(RESULT_DIR.joinpath("online", "cyclegan", "stable_diffusion_inpainting", model_name).iterdir())):
             dir_name = folder.name
             if dir_name not in mapping.keys():
                 continue
@@ -130,7 +130,7 @@ def get_result_folders_as_df():
     mapping = {v: k for k, v in ALL_PROMPTS_FOLDER_MAP.items()}
     for model_name in ['dave2', 'chauffeur', 'epoch']:
         for folder in sorted(
-                list(RESULT_DIR.joinpath("online", "stable_diffusion_inpainting_controlnet_refining", model_name).iterdir())):
+                list(RESULT_DIR.joinpath("online", "cyclegan", "stable_diffusion_inpainting_controlnet_refining", model_name).iterdir())):
             dir_name = folder.name
             if dir_name not in mapping.keys():
                 continue

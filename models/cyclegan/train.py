@@ -22,16 +22,32 @@ if __name__ == '__main__':
 
     # Training settings
     version = "v2"
-    max_epochs = 5
+    max_epochs = 20
     devices = [int(DEFAULT_DEVICE.split(':')[1])]
     for prompt, approach in itertools.product(
             [
-                "A-street-in-dust-storm-weather-photo-taken-from-a-car",
-                # "A-street-in-night-photo-taken-from-a-car",
-                # "A-street-in-autumn-photo-taken-from-a-car",
+                # "Make-it-dust-storm",
+                # "Make-it-night",
+                # "Make-it-autumn",
+                # "Make-it-summer",
+                # "Make-it-afternoon",
+                # "Make-it-sunny",
+                # "Make-it-winter",
+                # "Make-it-desert-area",
+                "Make-it-forest-area",
+                # "A-street-in-dust-storm-weather-photo-taken-from-a-car",
+                # "A-street-during-night-photo-taken-from-a-car",
+                # "A-street-in-summer-season-photo-taken-from-a-car",
+                # "A-street-during-afternoon-photo-taken-from-a-car",
+                # "A-street-in-sunny-weather-photo-taken-from-a-car",
+                # "A-street-in-winter-season-photo-taken-from-a-car",
+                # "A-street-in-autumn-season-photo-taken-from-a-car",
+                # "A-street-in-forest-area-photo-taken-from-a-car",
+                # "A-street-in-desert-area-photo-taken-from-a-car",
             ],
             [
-                "stable_diffusion_inpainting",
+                'instructpix2pix',
+                # "stable_diffusion_inpainting",
                 # "stable_diffusion_inpainting_controlnet_refining"
             ]
     ):
@@ -85,7 +101,7 @@ if __name__ == '__main__':
             callbacks=[checkpoint_callback],
             devices=devices,
             logger=[wandb_logger],
-            precision="bf16",
+            precision="bf16-mixed",
         )
 
         trainer.fit(

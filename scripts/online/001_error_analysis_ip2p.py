@@ -28,10 +28,12 @@ if __name__ == '__main__':
         max_cte_domain = {}
         mean_cte_domain = {}
         quality_domain = {}
+        ood_domain = {}
         domain_category = []
         unique_sector = set()
         domain_list = []
         category_list = []
+        runtime_domain = {}
         print(f"{approach}")
 
         domain_category = [DOMAIN_CATEGORIES_MAP[INSTRUCTION_TO_DOMAIN_MAP[prompt]] for prompt in ALL_INSTRUCTIONS]
@@ -45,7 +47,7 @@ if __name__ == '__main__':
             if not RESULT_DIR.joinpath(run_name, "after", 'vae_reconstruction.csv').exists():
                 continue
 
-            ood_value = pd.read_csv(RESULT_DIR.joinpath(run_name, "after", 'vae_reconstruction.csv'))
+            ood_value = pd.read_csv(RESULT_DIR.joinpath(run_name, "after", 'vae_reconstruction.csv'))['vae_0499'].mean()
             col_count_domain[domain] = sum([1 for x in json.load(open(RESULT_DIR.joinpath(run_name, "info.json")))['events'] if x.get('key', None) == 'collision'])
             oob_count_domain[domain] = sum([1 for x in json.load(open(RESULT_DIR.joinpath(run_name, "info.json")))['events'] if x.get('key', None) == 'out_of_track'])
             error_count_domain[domain] = oob_count_domain[domain] + col_count_domain[domain]
@@ -55,8 +57,9 @@ if __name__ == '__main__':
 
             max_cte_domain[domain] = np.abs(df['cte']).max()
             mean_cte_domain[domain] = np.abs(df['cte']).mean()
-
+            ood_domain[domain] = ood_value
             quality_domain[domain] = orig_df['steering_angle'].diff().abs().mean()
+            runtime_domain[domain] = df['time'].max() - df['time'].min()
 
             unique_sector = set()
             ts = [int(x['timestamp']) for x in json.load(open(RESULT_DIR.joinpath(run_name, "info.json")))['events'] if 'timestamp' in x]
@@ -77,13 +80,15 @@ if __name__ == '__main__':
             'quality': list(quality_domain.values()),
             'max_cte': list(max_cte_domain.values()),
             'mean_cte': list(mean_cte_domain.values()),
+            'ood': list(ood_domain.values()),
             'unique_sectors': list(unique_sectors_domain.values()),
             'domain_category': category_list,
-            'domain': domain_list
+            'domain': domain_list,
+            'runtime': list(runtime_domain.values()),
         })
 
-        print(err_df.sort_values('err'))
-        print(err_df[['mean_cte', 'quality', 'domain']])
+        # print(err_df.sort_values('err'))
+        # print(err_df[['mean_cte', 'quality', 'domain']])
         # print(err_df[['err', 'max_cte', 'mean_cte', 'col', 'oob', 'unique_sectors', 'quality']].max())
         # print(err_df[['err', 'max_cte', 'mean_cte', 'col', 'oob', 'unique_sectors', 'quality']].mean())
         # print(err_df[['err', 'max_cte', 'mean_cte', 'col', 'oob', 'unique_sectors', 'quality']].sem())
@@ -91,3 +96,13 @@ if __name__ == '__main__':
         # print(err_df.groupby('domain_category')[['col']].agg(['min', 'mean', 'max', 'sem']))
         # print(err_df.groupby('domain_category')[['oob']].agg(['min', 'mean', 'max', 'sem']))
         # print(err_df.groupby('domain_category')[['quality']].agg(['min', 'mean', 'max', 'sem']))
+
+        print((err_df.sort_values('err')['runtime'] / 60 / 1000).mean())
+        print((err_df.sort_values('err')['runtime'] / 60 / 1000).sem())
+
+        # domains = {'night', 'dust storm'}
+        # print(err_df[err_df['domain'].map(lambda x: x in domains)].sort_values('err')['ood'].mean())
+        # domains = {'sunny', 'summer', 'afternoon'}
+        # print(err_df[err_df['domain'].map(lambda x: x in domains)].sort_values('err')['ood'].mean())
+        # domains = {'winter', 'autumn'}
+        # print(err_df[err_df['domain'].map(lambda x: x in domains)].sort_values('err')['ood'].mean())

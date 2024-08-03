@@ -6,13 +6,15 @@ import numpy as np
 import torchvision
 import tqdm
 
+from domains.instruction import ALL_INSTRUCTIONS
 from domains.prompt import ALL_PROMPTS
+from models.augmentation.instructpix2pix import InstructPix2Pix
 from models.augmentation.stable_diffusion_inpainting import StableDiffusionInpainting
 from utils.path_utils import PROJECT_DIR
 
 if __name__ == '__main__':
 
-    model = StableDiffusionInpainting(prompt="", guidance=10)
+    model = InstructPix2Pix(prompt="", guidance=2.5)
 
     for dataset in [
         'udacity_dataset_lake',
@@ -24,7 +26,7 @@ if __name__ == '__main__':
         dataset_folder = pathlib.Path(f"/home/banana/projects/udacity-gym/{dataset}/"
                                       f"lake_sunny_day")
         output_folder = pathlib.Path(f"/home/banana/projects/udacity-gym/{dataset}/"
-                                     f"inpainting_lake_sunny_day/image")
+                                     f"instruct_lake_sunny_day/image")
         image_paths = list(dataset_folder.joinpath("image").glob('**/*.jpg'))
         mask_paths = list(dataset_folder.joinpath("segmentation").glob('**/*.png'))
         output_folder.mkdir(parents=True, exist_ok=True)
@@ -38,7 +40,7 @@ if __name__ == '__main__':
             mask = PIL.Image.open(image_path)
             mask = np.array(mask)[:, :, 2:] != 255
             mask = mask.astype(np.uint8) * 255
-            model.prompt = ALL_PROMPTS[i % len(ALL_PROMPTS)]
+            model.prompt = ALL_INSTRUCTIONS[i % len(ALL_INSTRUCTIONS)]
             augmented_image = model(image, mask)
             torchvision.utils.save_image(
                 augmented_image,

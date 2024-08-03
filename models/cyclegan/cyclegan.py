@@ -8,6 +8,8 @@ import torchinfo
 
 from models.cyclegan.module import GeneratorResNet, Discriminator
 from utils.conf import DEFAULT_DEVICE
+from utils.image_preprocess import to_pytorch_tensor
+from utils.path_utils import RESULT_DIR, PROJECT_DIR
 
 
 class CycleGAN(pl.LightningModule):
@@ -28,8 +30,9 @@ class CycleGAN(pl.LightningModule):
         self.criterion_identity = torch.nn.L1Loss()
         self.automatic_optimization = False
 
-    def forward(self, x):
-        return self.generator_AB(x)
+    def forward(self, x, *args, **kwargs):
+        x = to_pytorch_tensor(x).to(DEFAULT_DEVICE).unsqueeze(0)
+        return self.generator_AB(x).squeeze(0)
 
     def training_step(self, batch, batch_idx):
         g_opt, da_opt, db_opt = self.optimizers()
@@ -75,7 +78,7 @@ class CycleGAN(pl.LightningModule):
         loss_cycle = (loss_cycle_A + loss_cycle_B) / 2
 
         # Total loss
-        loss_G = 10 * loss_GAN * 5.0 * loss_cycle + 1.0 * loss_identity
+        loss_G = 2 * loss_GAN * 5.0 * loss_cycle + 10.0 * loss_identity
 
         self.log("train/g/gan", loss_GAN, prog_bar=True)
         self.log("train/g/cycle", loss_cycle, prog_bar=True)

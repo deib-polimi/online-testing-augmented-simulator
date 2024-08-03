@@ -48,6 +48,3 @@ scikit-learn==1.5.0
 
 # Image quality assessment
 pyiqa==0.1.10
-
-# Udacity-gym
-udacity-gym @ git+https://github.com/dragonbanana/udacity-gym.git

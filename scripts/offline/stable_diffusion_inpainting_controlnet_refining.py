@@ -8,11 +8,13 @@ import tqdm
 
 from domains.prompt import ALL_PROMPTS
 from models.augmentation.stable_diffusion_inpainting import StableDiffusionInpainting
+from models.augmentation.stable_diffusion_inpainting_controlnet_refining import \
+    StableDiffusionInpaintingControlnetRefining
 from utils.path_utils import PROJECT_DIR
 
 if __name__ == '__main__':
 
-    model = StableDiffusionInpainting(prompt="", guidance=10)
+    model = StableDiffusionInpaintingControlnetRefining(prompt="", guidance=10)
 
     for dataset in [
         'udacity_dataset_lake',
@@ -24,7 +26,7 @@ if __name__ == '__main__':
         dataset_folder = pathlib.Path(f"/home/banana/projects/udacity-gym/{dataset}/"
                                       f"lake_sunny_day")
         output_folder = pathlib.Path(f"/home/banana/projects/udacity-gym/{dataset}/"
-                                     f"inpainting_lake_sunny_day/image")
+                                     f"refining_lake_sunny_day/image")
         image_paths = list(dataset_folder.joinpath("image").glob('**/*.jpg'))
         mask_paths = list(dataset_folder.joinpath("segmentation").glob('**/*.png'))
         output_folder.mkdir(parents=True, exist_ok=True)
