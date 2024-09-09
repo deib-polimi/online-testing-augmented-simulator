@@ -1,8 +1,10 @@
 # Autonomous Driving System Testing with Domain Augmentation
 
-<p align="center">
-  <img width="100%" src="https://i.imgur.com/tm9mSuM.png" alt="Recommender System 2018 Challenge Polimi" />
-</p>
+[//]: # (<p align="center">)
+
+[//]: # (  <img width="100%" src="https://i.imgur.com/tm9mSuM.png" alt="Recommender System 2018 Challenge Polimi" />)
+
+[//]: # (</p>)
 
 ## Requirements
 To set up and run this project, ensure you have the following:
