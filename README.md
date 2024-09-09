@@ -22,15 +22,41 @@ The experiments were run on Linux.
 
 - Download the simulator from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/udacity-linux.tar.xz).
 
-## Augmented Dataset
+## Augmented Datasets
 
 The dataset used in this project consists of image pairs generated from multiple ODD domains. 
 
 We augmented the images collected from the Udacity simulator using three domain augmentation techniques and applied them to create new training and testing scenarios.
 
 ### Instruction-editing
-<img src="images/instruction-editing/change-season-to-autumn_0.jpg" width="425"/> ciao
-<img src="images/instruction-editing/change-season-to-autumn_1.jpg" width="425"/> 
+<p align="center">
+  <img src="images/instruction-editing/change-season-to-autumn_0.jpg" width="19%"/>
+  <img src="images/instruction-editing/change-season-to-autumn_1.jpg" width="19%"/> 
+  <img src="images/instruction-editing/change-season-to-autumn_2.jpg" width="19%"/>
+  <img src="images/instruction-editing/change-season-to-autumn_3.jpg" width="19%"/> 
+  <img src="images/instruction-editing/change-season-to-autumn_4.jpg" width="19%"/>
+</p>
 
 The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/instructpix2pix.tar.xz)
 
+### Inpainting
+<p align="center">
+  <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_0.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_1.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_2.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_3.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_4.jpg" width="19%"/>
+</p>
+
+The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/stable_diffusion_inpainting.tar.xz)
+
+### Inpainting with Refinement
+<p align="center">
+  <img src="images/inpainting-with-refinement/a-street-in-autumn-season_0.jpg" width="19%"/>
+  <img src="images/inpainting-with-refinement/a-street-in-autumn-season_1.jpg" width="19%"/>
+  <img src="images/inpainting-with-refinement/a-street-in-autumn-season_2.jpg" width="19%"/>
+  <img src="images/inpainting-with-refinement/a-street-in-autumn-season_3.jpg" width="19%"/>
+  <img src="images/inpainting-with-refinement/a-street-in-autumn-season_4.jpg" width="19%"/>
+</p>
+
+The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/stable_diffusion_inpainting_controlnet_refining.tar.xz)
