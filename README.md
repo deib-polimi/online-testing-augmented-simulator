@@ -17,7 +17,7 @@ To set up and run this project, ensure you have the following:
   pip install -r requirements.txt
   ```
   
-## Simulator
+## Udacity Simulator
 We utilized the Udacity Self-Driving Car Simulator as the simulation environment for this project. 
 The simulator supports various weather conditions, times of day, and road types, making it ideal for testing Autonomous Driving Systems (ADS) under different Operational Design Domains (ODDs).
 The experiments were run on Linux. 
@@ -62,3 +62,6 @@ The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-n
 </p>
 
 The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/stable_diffusion_inpainting_controlnet_refining.tar.xz)
+
+## Results
+

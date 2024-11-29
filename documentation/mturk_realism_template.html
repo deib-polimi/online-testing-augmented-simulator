@@ -1,0 +1,106 @@
+<!-- You must include this JavaScript file -->
+<!--<script src="https://assets.crowd.aws/crowd-html-elements.js"></script>-->
+<!--<script src="https://cdn.tailwindcss.com"></script>-->
+<!-- For the full list of available Crowd HTML Elements and their input/output documentation,
+      please refer to https://docs.aws.amazon.com/sagemaker/latest/dg/sms-ui-template-reference.html -->
+
+<!--<script src="https://assets.crowd.aws/crowd-html-elements.js"></script>-->
+<HTMLQuestion xmlns="http://mechanicalturk.amazonaws.com/AWSMechanicalTurkDataSchemas/2011-11-11/HTMLQuestion.xsd">
+  <HTMLContent><![CDATA[
+<!DOCTYPE html>
+<html>
+ <head>
+  <meta http-equiv='Content-Type' content='text/html; charset=UTF-8'/>
+  <script type='text/javascript' src='https://s3.amazonaws.com/mturk-public/externalHIT_v1.js'></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+ </head>
+ <body>
+    <div class="container md:mx-auto">
+        <div class="max-w-screen-xl flex flex-wrap items-center justify-center mx-auto p-8">
+            <img class="object-cover lg:w-96 border-black border border-8 lg:border-4"
+                 src="https://udacity-road.s3.amazonaws.com/sampled_realism/${image}">
+        </div>
+
+        <form method="POST" action="https://www.mturk.com/mturk/externalSubmit">
+            <input type="hidden" id="image" name="image" value="{{ image }}"/>
+            <input type="hidden" id="index" name="index" value="${index}"/>
+            <input type='hidden' value='' name='assignmentId' id='assignmentId'/>
+
+            <div class="object-cover w-full flex flex-wrap items-center mx-auto px-0 py-8">
+                <div class="max-w-screen-xl flex-col flex flex-wrap mx-auto px-16 py-16 lg:py-8">
+                    <div class="max-w-screen-xl flex flex-col flex-wrap items-left mx-0 mb-12">
+                    <span class="text-3xl lg:text-2xl font-semibold whitespace-nowrap text-black mb-2">
+                        Rate the image quality
+                    </span>
+                    <span class="text-2xl lg:text-xl text-black mb-2">
+                        Considering factors like detail, clarity, sharpness and absence of artifacts, <br>
+                        how well-rendered and high-quality does this image appear to you?"
+                    </span>
+                    <a class="text-2xl lg:text-xl text-blue-600 hover:text-blue-800 visited:text-purple-600 underline"
+                           href="https://docs.google.com/presentation/d/e/2PACX-1vTFQImyUvYvfi6N1OFXs0QSG_esccF37M-Kok_YEhbDvrLRCEAU2eWyVqxfEOrn5lKkKD1pzL4zZ0f-/pub?start=true&loop=true&delayms=3000"
+                           target="_blank">
+                            Link to detailed instructions
+                    </a>
+                </div>
+
+                    <div class="max-w-screen-xl flex flex-wrap p-0 mb-4">
+                    <span class="text-3xl lg:text-2xl font-semibold whitespace-nowrap text-black">
+                        Choose an answer:
+                    </span>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <input id="default-radio-1" type="radio" value="1" name="answer"
+                               class="w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="default-radio-1"
+                               class="ms-2 text-2xl lg:text-xl  font-medium text-gray-900 dark:text-gray-300">
+                            <span class="text-red-700 font-semibold">Very Low Quality</span>, the image is pixelated and/or characterized by significant artifacts.
+                        </label>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <input id="default-radio-2" type="radio" value="2" name="answer"
+                               class="w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="default-radio-2"
+                               class="ms-2 text-2xl lg:text-xl font-medium text-gray-900 dark:text-gray-300">
+                            <span class="text-orange-600 font-semibold">Low Quality</span>, the image lacks sharpness and the overall impression is below average.
+                        </label>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <input checked id="default-radio-3" type="radio" value="3" name="answer"
+                               class="w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="default-radio-3"
+                               class="ms-2 text-2xl lg:text-xl  font-medium text-gray-900 dark:text-gray-300">
+                            <span class="text-yellow-600 font-semibold">Medium Quality</span>, average image quality. No major flaws, but also not exceptional.
+                        </label>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <input id="default-radio-4" type="radio" value="4" name="answer"
+                               class="w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="default-radio-4"
+                               class="ms-2 text-2xl lg:text-xl font-medium text-gray-900 dark:text-gray-300">
+                            <span class="text-lime-600 font-semibold">High Quality</span>, the image is sharp, detailed with good resolution, realistic textures and lighting.
+                        </label>
+                    </div>
+                    <div class="flex items-center mb-4">
+                        <input id="default-radio-5" type="radio" value="5" name="answer"
+                               class="w-6 h-6 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
+                        <label for="default-radio-5"
+                               class="ms-2 text-2xl lg:text-xl font-medium text-gray-900 dark:text-gray-300">
+                            <span class="text-emerald-600 font-semibold">Very High Quality</span>, the image has exceptional detail and natural textures.
+                        </label>
+                    </div>
+                    <div type="submit" class="w-1/2 flex flex-wrap items-center my-4">
+                        <button class="bg-blue-800 hover:bg-blue-950 text-white font-bold py-12 lg:py-6 px-24 lg:px-16 rounded text-2xl lg:text-xl"
+                                name="submit" value="">
+                            Submit
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+  <script language='Javascript'>turkSetAssignmentID();</script>
+ </body>
+</html>
+  </HTMLContent>
+  <FrameHeight>0</FrameHeight>
+</HTMLQuestion>
