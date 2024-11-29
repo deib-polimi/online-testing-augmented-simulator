@@ -63,5 +63,11 @@ The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-n
 
 The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/stable_diffusion_inpainting_controlnet_refining.tar.xz)
 
-## Results
+## Human Study
 
+The human study and the documentation about its results can be found [here](documentation/human_study.md)
+
+<p align="center">
+  <img src="documentation/realism_example.png" height="300px" alt="Realism Question Screenshot" />
+  <img src="documentation/semantic_example.png" height="300px" alt="Semantic Validity Question Screenshot" />
+</p>
