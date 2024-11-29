@@ -68,6 +68,6 @@ The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-n
 The human study and the documentation about its results can be found [here](documentation/human_study.md)
 
 <p align="center">
-  <img src="documentation/realism_example.png" width="45%" alt="Realism Question Screenshot" />
-  <img src="documentation/semantic_example.png" width="45%" alt="Semantic Validity Question Screenshot" />
+  <img src="documentation/realism_example.png" width="50%" alt="Realism Question Screenshot" />
+  <img src="documentation/semantic_example.png" width="42.86%" alt="Semantic Validity Question Screenshot" />
 </p>
