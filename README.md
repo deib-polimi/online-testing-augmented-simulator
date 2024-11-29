@@ -1,8 +1,8 @@
 # Autonomous Driving System Testing with Domain Augmentation
 
 <p align="center">
-  <img src="documentation/udacity-day-to-sunset.gif" width="80%"/>
-  <img src="documentation/carla-day-to-night.gif" width="80%"/>
+  <img src="documentation/udacity-day-to-sunset.gif" width="33%"/>
+  <img src="documentation/carla-day-to-night.gif" width="63.31%"/>
 </p>
 
 ## Requirements
