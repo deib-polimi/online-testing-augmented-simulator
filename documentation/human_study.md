@@ -42,8 +42,8 @@ The source code for the web platform is available [here](../scripts/human_study/
 Below are two example screenshots from the platform, showcasing a realism question (left) and a semantic validity question (right):
 
 <p align="center">
-  <img src="./realism-example.png" height="300px" alt="Realism Question Screenshot" />
-  <img src="./semantic-example.png" height="300px" alt="Semantic Validity Question Screenshot" />
+  <img src="realism_example.png" height="300px" alt="Realism Question Screenshot" />
+  <img src="semantic_example.png" height="300px" alt="Semantic Validity Question Screenshot" />
 </p>
 
 ---
