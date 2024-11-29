@@ -69,5 +69,5 @@ The human study and the documentation about its results can be found [here](docu
 
 <p align="center">
   <img src="documentation/realism_example.png" width="45%" alt="Realism Question Screenshot" />
-  <img src="documentation/semantic_example.png" height="45%" alt="Semantic Validity Question Screenshot" />
+  <img src="documentation/semantic_example.png" width="45%" alt="Semantic Validity Question Screenshot" />
 </p>
