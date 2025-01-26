@@ -109,6 +109,11 @@ The dataset used in this project consists of image pairs generated from multiple
 We augmented the images collected from the Udacity simulator using three domain augmentation techniques and applied them to create new training and testing scenarios.
 
 ### Instruction-editing
+Given an initial image and a text instruction (e.g., “change season to autumn”), this approach edits the scene accordingly.
+
+The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/instructpix2pix.tar.xz)
+
+**Prompt**: "Change season to autumn"
 <p align="center">
   <img src="images/instruction-editing/change-season-to-autumn_0.jpg" width="19%"/>
   <img src="images/instruction-editing/change-season-to-autumn_1.jpg" width="19%"/> 
@@ -117,9 +122,22 @@ We augmented the images collected from the Udacity simulator using three domain 
   <img src="images/instruction-editing/change-season-to-autumn_4.jpg" width="19%"/>
 </p>
 
-The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/instructpix2pix.tar.xz)
+**Prompt**: "Change time to night"
+<p align="center">
+  <img src="images/instruction-editing/change-time-to-night_0.jpg" width="19%"/>
+  <img src="images/instruction-editing/change-time-to-night_1.jpg" width="19%"/> 
+  <img src="images/instruction-editing/change-time-to-night_2.jpg" width="19%"/>
+  <img src="images/instruction-editing/change-time-to-night_3.jpg" width="19%"/> 
+  <img src="images/instruction-editing/change-time-to-night_4.jpg" width="19%"/>
+</p>
+
 
 ### Inpainting
+Preserves the road pixels via a mask and regenerates the background with a text prompt.
+
+The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/stable_diffusion_inpainting.tar.xz)
+
+**Prompt**: "A street in autumn season"
 <p align="center">
   <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_0.jpg" width="19%"/>
   <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_1.jpg" width="19%"/>
@@ -128,9 +146,30 @@ The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-n
   <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_4.jpg" width="19%"/>
 </p>
 
-The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/stable_diffusion_inpainting.tar.xz)
+**Prompt**: "A street in night time"
+<p align="center">
+  <img src="images/inpainting/A-street-in-night-time_0.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-night-time_1.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-night-time_2.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-night-time_3.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-night-time_4.jpg" width="19%"/>
+</p>
+
+**Prompt**: "A street during dust storm"
+<p align="center">
+  <img src="images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_0.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_1.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_2.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_3.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_4.jpg" width="19%"/>
+</p>
 
 ### Inpainting with Refinement
+An additional refinement step enforces edge coherence for higher realism while retaining road geometry.
+
+The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/stable_diffusion_inpainting_controlnet_refining.tar.xz)
+
+**Prompt**: "A street in autumn season"
 <p align="center">
   <img src="images/inpainting-with-refinement/a-street-in-autumn-season_0.jpg" width="19%"/>
   <img src="images/inpainting-with-refinement/a-street-in-autumn-season_1.jpg" width="19%"/>
@@ -139,7 +178,14 @@ The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-n
   <img src="images/inpainting-with-refinement/a-street-in-autumn-season_4.jpg" width="19%"/>
 </p>
 
-The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/stable_diffusion_inpainting_controlnet_refining.tar.xz)
+**Prompt**: "A street during dust storm"
+<p align="center">
+  <img src="images/inpainting-with-refinement/a-street-with-dust-storm_0.jpg" width="19%"/>
+  <img src="images/inpainting-with-refinement/a-street-with-dust-storm_1.jpg" width="19%"/>
+  <img src="images/inpainting-with-refinement/a-street-with-dust-storm_2.jpg" width="19%"/>
+  <img src="images/inpainting-with-refinement/a-street-with-dust-storm_3.jpg" width="19%"/>
+  <img src="images/inpainting-with-refinement/a-street-with-dust-storm_4.jpg" width="19%"/>
+</p>
 
 ## Human Study
 
@@ -149,3 +195,17 @@ The human study and the documentation about its results can be found [here](docu
   <img src="documentation/realism_example.png" width="42.86%" alt="Realism Question Screenshot" />
   <img src="documentation/semantic_example.png" width="50%" alt="Semantic Validity Question Screenshot" />
 </p>
+
+## Citation
+```
+@article{DBLP:conf/icse/augmented_online_testing_25,
+  author       = {Luciano Baresi and
+                  Davide Yi Xian Hu and
+                  Andrea Stocco and
+                  Paolo Tonella},
+  title        = {Efficient Domain Augmentation for Autonomous Driving Testing Using
+                  Diffusion Models},
+  booktitle    = {Proceedings of the International Conference on Software Engineering},
+  year         = {2025},  
+}
+```

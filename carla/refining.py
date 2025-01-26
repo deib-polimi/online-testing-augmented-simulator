@@ -7,8 +7,6 @@ import torchvision
 from models.augmentation.stable_diffusion_inpainting_controlnet_refining import \
     StableDiffusionInpaintingControlnetRefining
 
-# Define the structuring element (kernel) for dilation
-structuring_element = np.ones((5, 5), dtype=bool)
 from scipy.ndimage import binary_dilation
 from models.augmentation.stable_diffusion_inpainting import StableDiffusionInpainting
 
@@ -31,6 +29,9 @@ if __name__ == '__main__':
         "A road during winter",
     ]
 
+    # Define the structuring element (kernel) for dilation
+    structuring_element = np.ones((5, 5), dtype=bool)
+    
     for prompt in prompts:
         model.prompt = prompt
         for run_folder in [

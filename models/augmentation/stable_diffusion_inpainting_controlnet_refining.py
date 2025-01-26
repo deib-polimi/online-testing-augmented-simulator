@@ -117,7 +117,7 @@ if __name__ == '__main__':
 
     # 2. Compile model to speedup generation
     with torch.no_grad():
-        model = StableDiffusionInpaintingControlnetRefining(prompt="", guidance=10, strength=0.9)
+        model = StableDiffusionInpaintingControlnetRefining(prompt="", guidance=10, strength=0.5)
         mask_model = SegmentationUnet.load_from_checkpoint(MODEL_DIR.joinpath("unet", "epoch_142.ckpt")).to(DEFAULT_DEVICE)
         mask = mask_model(to_pytorch_tensor(image).to(DEFAULT_DEVICE).unsqueeze(0)).squeeze(0)
         mask = (mask < 0.5).to(torch.float)
@@ -125,7 +125,7 @@ if __name__ == '__main__':
         # 3. Generating images
         images = []
         # for prompt in ALL_PROMPTS:
-        for prompt in ["a street with dust storm"]:
+        for prompt in ["A street in night time"]:
             model.prompt = prompt
             inference_times = []
             for i in range(n_runs):

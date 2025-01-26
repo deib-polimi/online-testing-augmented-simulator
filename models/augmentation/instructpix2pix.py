@@ -74,7 +74,7 @@ if __name__ == '__main__':
     # 3. Generating images
     images = []
     # for prompt in ALL_INSTRUCTIONS:
-    for prompt in ['change season to autumn']:
+    for prompt in ['change time to night']:
         model.prompt = prompt
         inference_times = []
         for i in range(n_runs):

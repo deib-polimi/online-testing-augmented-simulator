@@ -85,7 +85,8 @@ if __name__ == '__main__':
 
         # 3. Generating images
         images = []
-        for prompt in ALL_PROMPTS:
+        # for prompt in ALL_PROMPTS:
+        for prompt in ["A street in night time"]:
             model.prompt = prompt
             inference_times = []
             for i in range(n_runs):
