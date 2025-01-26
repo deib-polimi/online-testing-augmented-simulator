@@ -11,13 +11,11 @@ This repository provides **domain augmentation** techniques for **Autonomous Dri
 - [Requirements](#requirements)
 - [Installation and Usage](#installation-and-usage)
 - [Project Structure](#project-structure)
-- [Simulator Details](#simulator-details)
 - [Augmented Datasets](#augmented-datasets)
   - [Instruction-editing](#instruction-editing)
   - [Inpainting](#inpainting)
   - [Inpainting-with-Refinement](#inpainting-with-refinement)
 - [Human Study](#human-study)
-- [Key Results](#key-results)
 - [Citation and License](#citation-and-license)
 
 ---
