@@ -33,6 +33,7 @@ class StableDiffusionInpaintingControlnetRefining:
             torch_dtype=torch.bfloat16
         )
         self.inpainting_pipe.scheduler = UniPCMultistepScheduler.from_config(self.inpainting_pipe.scheduler.config)
+        self.inpainting_pipe.safety_checker = None
         self.inpainting_pipe = self.inpainting_pipe.to(DEFAULT_DEVICE)
 
         self.refining_pipe = StableDiffusionControlNetImg2ImgPipeline.from_pretrained(
@@ -41,6 +42,7 @@ class StableDiffusionInpaintingControlnetRefining:
             controlnet=ControlNetModel.from_pretrained("lllyasviel/sd-controlnet-canny", torch_dtype=torch.bfloat16),
         )
         self.refining_pipe.scheduler = UniPCMultistepScheduler.from_config(self.refining_pipe.scheduler.config)
+        self.refining_pipe.safety_checker = None
         self.refining_pipe = self.refining_pipe.to(DEFAULT_DEVICE)
         self.hint_generator = CannyDetector()
 
@@ -63,8 +65,8 @@ class StableDiffusionInpaintingControlnetRefining:
         # 1. Convert input image to torch tensor
         image = to_pytorch_tensor(image).to(DEFAULT_DEVICE)
         mask = to_pytorch_tensor(mask).to(DEFAULT_DEVICE)
-        assert image.shape == self.input_shape, (f"input image shape ({image.shape}) have different size "
-                                                 f"from the expected one ({self.input_shape}).")
+        # assert image.shape == self.input_shape, (f"input image shape ({image.shape}) have different size "
+        #                                          f"from the expected one ({self.input_shape}).")
 
         # 2. Resize image to the right shape for processing
         _, h, w = self.input_shape

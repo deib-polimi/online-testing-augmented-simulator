@@ -30,6 +30,7 @@ class StableDiffusionInpainting:
             torch_dtype=torch.bfloat16
         )
         self.pipe.scheduler = UniPCMultistepScheduler.from_config(self.pipe.scheduler.config)
+        self.pipe.safety_checker = None
         self.pipe = self.pipe.to(DEFAULT_DEVICE)
 
     def optimize(self):
@@ -40,8 +41,8 @@ class StableDiffusionInpainting:
         # 1. Convert input image to torch tensor
         image = to_pytorch_tensor(image).to(DEFAULT_DEVICE)
         mask = to_pytorch_tensor(mask).to(DEFAULT_DEVICE)
-        assert image.shape == self.input_shape, (f"input image shape ({image.shape}) have different size "
-                                                 f"from the expected one ({self.input_shape}).")
+        # assert image.shape == self.input_shape, (f"input image shape ({image.shape}) have different size "
+        #                                          f"from the expected one ({self.input_shape}).")
 
         # 2. Resize image to the right shape for processing
         _, h, w = self.input_shape

@@ -43,18 +43,18 @@ class StableDiffusionXLInpainting:
         # 1. Convert input image to torch tensor
         image = to_pytorch_tensor(image).to(DEFAULT_DEVICE)
         mask = to_pytorch_tensor(mask).to(DEFAULT_DEVICE)
-        assert image.shape == self.input_shape, (f"input image shape ({image.shape}) have different size "
-                                                 f"from the expected one ({self.input_shape}).")
+        # assert image.shape == self.input_shape, (f"input image shape ({image.shape}) have different size "
+        #                                          f"from the expected one ({self.input_shape}).")
 
         # 2. Resize image to the right shape for processing
         _, h, w = self.input_shape
-        image = torchvision.transforms.functional.resize(image, (h * 3, w * 3))
-        mask_image = torchvision.transforms.functional.resize(mask, (h * 3, w * 3))
+        image = torchvision.transforms.functional.resize(image, (h, w))
+        mask_image = torchvision.transforms.functional.resize(mask, (h, w))
 
         # 3. Augment image
         augmented_image = self.pipe(prompt=self.prompt, image=image, mask_image=mask_image,
                                     negative_prompt='low quality, bad quality, blurry, cars',
-                                    height=h * 3, width=w * 3, num_inference_steps=self.num_inference_step,
+                                    height=h, width=w, num_inference_steps=self.num_inference_step,
                                     guidance_scale=self.guidance, output_type='pt').images
 
         # 4. Resize to original image

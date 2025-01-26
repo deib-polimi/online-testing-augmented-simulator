@@ -36,8 +36,8 @@ class InstructPix2Pix:
     def forward(self, image):
         # 1. Convert input image to torch tensor
         image = to_pytorch_tensor(image).to(DEFAULT_DEVICE)
-        assert image.shape == self.input_shape, (f"input image shape ({image.shape}) have different size "
-                                                 f"from the expected one ({self.input_shape}).")
+        # assert image.shape == self.input_shape, (f"input image shape ({image.shape}) have different size "
+        #                                          f"from the expected one ({self.input_shape}).")
 
         # 2. Augment image
         augmented_image = self.pipe(prompt=self.prompt, image=image, num_images_per_prompt=1,

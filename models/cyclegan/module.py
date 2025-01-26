@@ -1,7 +1,29 @@
 import torch
 from torch import nn
 from torch.nn import functional
+import numpy as np
 
+class ReplayBuffer:
+    def __init__(self, max_size=50):
+        self.max_size = max_size
+        self.data = []
+
+    def push_and_pop(self, data):
+        return_images = []
+        for image in data:
+            image = torch.unsqueeze(image.data, 0)
+            if len(self.data) < self.max_size:
+                self.data.append(image)
+                return_images.append(image)
+            else:
+                if np.random.uniform(0,1) > 0.5:
+                    i = np.random.randint(0, len(self.data))
+                    tmp = self.data[i].clone()
+                    self.data[i] = image
+                    return_images.append(tmp)
+                else:
+                    return_images.append(image)
+        return torch.cat(return_images)
 
 class ResidualBlock(nn.Module):
     def __init__(self, in_features):
@@ -22,7 +44,6 @@ class ResidualBlock(nn.Module):
 
     def forward(self, x):
         return self.block(x) + x
-
 
 class GeneratorResNet(nn.Module):
     def __init__(self, input_shape, num_residual_blocks: int, out_features: int = 64, attention: bool = False):
