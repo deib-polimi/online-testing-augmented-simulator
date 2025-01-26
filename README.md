@@ -26,7 +26,7 @@ This repository provides **domain augmentation** techniques for **Autonomous Dri
    ```bash
    git clone https://github.com/deib-polimi/online-testing-augmented-simulator
    cd online-testing-augmented-simulator
-
+    ```
 
 ## Requirements
 To set up and run this project, ensure you have the following:
