@@ -51,11 +51,3 @@ pyiqa==0.1.10
 
 # Udacity Driving Simulator
 udacity-gym @ git+https://github.com/dragonbanana/udacity-gym.git
-
-# Carla Driving Simulator
-carla==0.9.15
-future
-
-# Shift
-# -e git+https://github.com/SysCV/shift-dev.git#egg=shift-dev
-# appdirs

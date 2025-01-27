@@ -154,7 +154,7 @@ This artifact includes **executable components** (ADS simulations and augmentati
 - **Python**: Version 3.8 or higher (tested with Python 3.10).  
 - **Dependencies**: Listed in `requirements.txt` (install using `pip install -r requirements.txt`).
 
-> **Docker**: We do not recommend to use this artifact in a Docker environment since it requires NVIDIA Drivers and to redirect the X Server output for rendering simulations.
+> **Docker**: We do not recommend to use this artifact in a Docker environment since it requires NVIDIA Drivers and to redirect the X Server output for rendering driving simulations.
 
 **Quick Verification**  
 1. **Clone the Repository**:  
