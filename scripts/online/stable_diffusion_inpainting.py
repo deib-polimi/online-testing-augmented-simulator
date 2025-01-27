@@ -1,30 +1,27 @@
 import itertools
-
-from udacity_gym import UdacitySimulator, UdacityGym
 import json
-import pathlib
 import re
 import time
-import torch
+
 from tqdm import tqdm
-from udacity_gym.agent import DaveUdacityAgent, EndToEndLaneKeepingAgent
+from udacity_gym import UdacitySimulator, UdacityGym
+from udacity_gym.agent import EndToEndLaneKeepingAgent
 from udacity_gym.agent_callback import PauseSimulationCallback, LogObservationCallback, TransformObservationCallback, \
     ResumeSimulationCallback
-from domains.instruction import ALL_INSTRUCTIONS
+
 from domains.prompt import ALL_PROMPTS
 from models.augmentation.base import Augment
 from models.augmentation.stable_diffusion_inpainting import StableDiffusionInpainting
 from utils.conf import DEFAULT_DEVICE
-from utils.path_utils import RESULT_DIR, MODEL_DIR
 from utils.net_utils import is_port_in_use
+from utils.path_utils import RESULT_DIR, MODEL_DIR
 
 if __name__ == '__main__':
 
     # 0. Experiment Configuration
     host = "127.0.0.1"
-    port = 9992
+    port = 9999
     simulator_exe_path = "simulatorv2/udacity.x86_64"
-    checkpoint = MODEL_DIR.joinpath("dave2", "dave2-v3.ckpt")
     n_steps = 2000
 
     while is_port_in_use(port):
@@ -85,8 +82,8 @@ if __name__ == '__main__':
     # 6. Drive
     for prompt, model_name in list(itertools.product(
             ALL_PROMPTS,
-            ['dave2', 'epoch', 'chauffeur']
-    ))[::-1]:
+            ['dave2', 'epoch', 'chauffeur', 'vit']
+    )):
 
         run_name = f"online/stable_diffusion_inpainting/{model_name}/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
         if RESULT_DIR.joinpath(run_name).joinpath("after", "log.csv").exists():

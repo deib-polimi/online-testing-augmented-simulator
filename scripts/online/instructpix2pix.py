@@ -1,21 +1,20 @@
 import itertools
-
-from udacity_gym import UdacitySimulator, UdacityGym
 import json
-import pathlib
 import re
 import time
-import torch
+
 from tqdm import tqdm
-from udacity_gym.agent import DaveUdacityAgent, EndToEndLaneKeepingAgent
+from udacity_gym import UdacitySimulator, UdacityGym
+from udacity_gym.agent import EndToEndLaneKeepingAgent
 from udacity_gym.agent_callback import PauseSimulationCallback, LogObservationCallback, TransformObservationCallback, \
     ResumeSimulationCallback
+
 from domains.instruction import ALL_INSTRUCTIONS
 from models.augmentation.base import Augment
 from models.augmentation.instructpix2pix import InstructPix2Pix
 from utils.conf import DEFAULT_DEVICE
-from utils.path_utils import RESULT_DIR, MODEL_DIR
 from utils.net_utils import is_port_in_use
+from utils.path_utils import RESULT_DIR, MODEL_DIR
 
 if __name__ == '__main__':
 
@@ -85,8 +84,8 @@ if __name__ == '__main__':
     # 6. Drive
     for prompt, model_name in list(itertools.product(
             ALL_INSTRUCTIONS,
-            ['dave2', 'epoch', 'chauffeur']
-    ))[::-1][80:95]:
+            ['dave2', 'epoch', 'chauffeur', 'vit']
+    )):
 
         run_name = f"online/instructpix2pix/{model_name}/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
         if RESULT_DIR.joinpath(run_name).joinpath("after", "log.csv").exists():

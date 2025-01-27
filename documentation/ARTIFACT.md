@@ -196,7 +196,7 @@ This artifact includes **executable components** (ADS simulations and augmentati
    Please download the simulator from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/udacity-linux.tar.xz), run from terminal:
    ```bash
    wget https://icse-2025.s3.eu-north-1.amazonaws.com/udacity-linux.tar.xz
-   tar -xJf udacity-linux.tar.xz
+   tar -xJf pretrained-udacity-models.tar.xz
    ```
    Check if the Udacity simulator is running correctly:
    ```bash
@@ -225,6 +225,7 @@ This artifact includes **executable components** (ADS simulations and augmentati
    mv vit.ckpt $MODEL_DIR/vit/
    ```
 
-
 ## Usage
+
+
 

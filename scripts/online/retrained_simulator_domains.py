@@ -3,19 +3,10 @@ eventlet.monkey_patch()
 import itertools
 from udacity_gym import UdacitySimulator, UdacityGym
 import json
-import pathlib
-import re
 import time
-import torch
 from tqdm import tqdm
-from udacity_gym.agent import DaveUdacityAgent, EndToEndLaneKeepingAgent
-from udacity_gym.agent_callback import PauseSimulationCallback, LogObservationCallback, TransformObservationCallback, \
-    ResumeSimulationCallback
-from domains.instruction import ALL_INSTRUCTIONS
-from domains.prompt import ALL_PROMPTS
-from models.augmentation.base import Augment
-from models.augmentation.stable_diffusion_inpainting import StableDiffusionInpainting
-from models.cyclegan.cyclegan import CycleGAN
+from udacity_gym.agent import EndToEndLaneKeepingAgent
+from udacity_gym.agent_callback import PauseSimulationCallback, LogObservationCallback, ResumeSimulationCallback
 from utils.conf import DEFAULT_DEVICE
 from utils.path_utils import RESULT_DIR, MODEL_DIR, PROJECT_DIR
 from utils.net_utils import is_port_in_use
