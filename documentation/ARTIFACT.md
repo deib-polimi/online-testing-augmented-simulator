@@ -164,6 +164,8 @@ This artifact includes **executable components** (ADS simulations and augmentati
    ```
 2. **Install Python Packages**:  
    ```bash
+   python3 -m venv venv
+   source venv/bin/activate
    pip install -r requirements.txt
    ```
 3. **Check GPU availability**:  

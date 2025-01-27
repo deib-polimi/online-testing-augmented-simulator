@@ -14,6 +14,9 @@ MODEL_DIR = pathlib.Path("/media/banana/data/models/online-testing")
 LOG_DIR = pathlib.Path("/media/banana/data/logs/online-testing")
 DATASET_DIR = pathlib.Path("/media/banana/data/dataset")
 
+for directory in [RESULT_DIR, MODEL_DIR, LOG_DIR, DATASET_DIR]:
+    if not directory.exists():
+        directory.mkdir(parents=True, exist_ok=True)
 
 def get_images_from_folder(folder: pathlib.Path):
     return [x for x in sorted(list(folder.iterdir())) if x.suffix == '.jpg']
