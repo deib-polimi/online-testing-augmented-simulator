@@ -232,7 +232,7 @@ This artifact includes **executable components** (ADS simulations and augmentati
 
 ## Usage
 
-## Udacity Simulator
+### Udacity Simulator
 
 1. **Nominal Condition**:
    ```bash
@@ -280,3 +280,42 @@ This artifact includes **executable components** (ADS simulations and augmentati
    ```
    
    > Each script might require 24+ hours.
+
+### CARLA Simulator
+
+Experiments with CARLA simulator were executed starting from the [InterFuser repository](https://github.com/opendilab/InterFuser).
+Follow their instruction to install CARLA and InterFuser.
+
+1. **Nominal Condition**:
+   Run the script from the original authors ([link](https://github.com/opendilab/InterFuser/tree/main?tab=readme-ov-file#evaluation)).
+   ```bash
+   export CARLA_ROOT=[PATH TO THE CARLA SIMULATOR]
+   export ROUTES=leaderboard/data/evaluation_routes/routes_town05_long.xml
+   export TEAM_AGENT=leaderboard/team_code/interfuser_agent.py
+   export TEAM_CONFIG=leaderboard/team_code/interfuser_config.py
+   export CHECKPOINT_ENDPOINT=results/interfuser_result.json
+   export SCENARIOS=leaderboard/data/scenarios/town05_all_scenarios.json
+   
+   CUDA_VISIBLE_DEVICES=0 ./leaderboard/scripts/run_evaluation.sh
+   ```
+   
+2. **Offline Domain Augmentation**:
+   ```bash
+   python3 carla/instruct.py
+   python3 carla/inpainting.py
+   python3 carla/refining.py
+   ```
+   > Each script might require 48+ hours.
+
+3. **Train the distilled models**:
+
+   Before running the script, configure `domain` and `approach` (lines 27-52).
+   ```bash
+   python3 models/cyclegan/train.py
+   ```
+
+   > Note that, to improve monitoring of the checkpoints, we used wandb.
+
+   > It is possible to disable this service by removing the following lines of code (line 97) `wandb_logger = WandbLogger(project=f"cyclegan_{version}", dir=LOG_DIR.joinpath(f"cyclegan_{version}"))` and (line 103) `  logger=[wandb_logger],`.
+
+   > Each script might require 48+ hours.

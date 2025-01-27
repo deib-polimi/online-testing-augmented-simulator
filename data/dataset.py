@@ -31,7 +31,7 @@ class ImagePairDataset(Dataset):
 
     def __getitem__(self, index):
         image_paths_a = self.image_paths_a[index]
-        if random.random() > 0.5:
+        if random.random() > 0.9:
             index = int(random.random() * len(self))
         a = Image.open(image_paths_a)
         image_paths_b = self.image_paths_b[index]
