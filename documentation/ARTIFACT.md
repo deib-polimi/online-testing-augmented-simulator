@@ -23,3 +23,112 @@ This artifact is publicly available in the following online repository:
 The **preprint** of the paper is available here:
 
 - **Paper Preprint**: [Arxiv](https://arxiv.org/abs/2409.13661)
+
+## Data
+
+This artifact includes **nontrivial datasets** generated from virtual driving simulations, as well as augmented images created using diffusion-based methods. Below, we outline key aspects of data usage and management:
+
+**Context:**  
+Our datasets contain synthetic driving images depicting diverse Operational Design Domain (ODD) conditions (e.g., weather, time of day). These images are exclusively generated from physics-based simulators (Udacity and CARLA), ensuring no personally identifiable information is present.
+
+**Data Provenance:**  
+1. **Simulator Outputs:** The base images come from the Udacity Self-Driving Car Simulator and the CARLA simulator (version [PLACEHOLDER]).
+2. **Augmented Images:** We applied diffusion-based augmentation (Instruction-editing, Inpainting, and Inpainting with Refinement) to produce new or modified variants of the simulator outputs.  
+   - Each augmented dataset is distributed in compressed archives (e.g., `.tar.xz`) hosted on a public repository or archival service.  
+   - See [Augmented Datasets](#augmented-datasets) for more details and direct download links.
+
+**Ethical and Legal Statements:**  
+- **Privacy:** Since all images are synthetic and do not involve real human subjects, there are no privacy concerns or personally identifiable data.  
+- **Licensing:** Datasets are released under MIT LICENSE, or follow the standard license provided by the simulator.
+- **Usage Permissions:** Ensure compliance with the simulator’s terms of service if you plan to distribute or reuse the base simulator outputs.  
+
+**Storage Requirements:**  
+- **Data Size:** Each augmented dataset may range from 7GB to 10 GB, depending on the number of scenarios and image resolution.  
+- **Disk Space:** Users should have sufficient storage (e.g., an additional 50GB) if all datasets are downloaded and expanded simultaneously.
+
+> **Note**: Users must verify they have adequate **Storage** if employing these datasets for deep learning tasks or further augmentation. All datasets are compressed as 'tar.xz' files.
+
+### Augmented Datasets
+
+The dataset used in this project consists of image pairs generated from multiple ODD domains. 
+
+We augmented the images collected from the Udacity simulator using three domain augmentation techniques and applied them to create new training and testing scenarios.
+
+#### Instruction-editing
+Given an initial image and a text instruction (e.g., “change season to autumn”), this approach edits the scene accordingly.
+
+The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/instructpix2pix.tar.xz)
+
+**Prompt**: "Change season to autumn"
+<p align="center">
+  <img src="images/instruction-editing/change-season-to-autumn_0.jpg" width="19%"/>
+  <img src="images/instruction-editing/change-season-to-autumn_1.jpg" width="19%"/> 
+  <img src="images/instruction-editing/change-season-to-autumn_2.jpg" width="19%"/>
+  <img src="images/instruction-editing/change-season-to-autumn_3.jpg" width="19%"/> 
+  <img src="images/instruction-editing/change-season-to-autumn_4.jpg" width="19%"/>
+</p>
+
+**Prompt**: "Change time to night"
+<p align="center">
+  <img src="images/instruction-editing/change-time-to-night_0.jpg" width="19%"/>
+  <img src="images/instruction-editing/change-time-to-night_1.jpg" width="19%"/> 
+  <img src="images/instruction-editing/change-time-to-night_2.jpg" width="19%"/>
+  <img src="images/instruction-editing/change-time-to-night_3.jpg" width="19%"/> 
+  <img src="images/instruction-editing/change-time-to-night_4.jpg" width="19%"/>
+</p>
+
+
+#### Inpainting
+Preserves the road pixels via a mask and regenerates the background with a text prompt.
+
+The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/stable_diffusion_inpainting.tar.xz)
+
+**Prompt**: "A street in autumn season"
+<p align="center">
+  <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_0.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_1.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_2.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_3.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_4.jpg" width="19%"/>
+</p>
+
+**Prompt**: "A street in night time"
+<p align="center">
+  <img src="images/inpainting/A-street-in-night-time_0.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-night-time_1.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-night-time_2.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-night-time_3.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-night-time_4.jpg" width="19%"/>
+</p>
+
+**Prompt**: "A street during dust storm"
+<p align="center">
+  <img src="images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_0.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_1.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_2.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_3.jpg" width="19%"/>
+  <img src="images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_4.jpg" width="19%"/>
+</p>
+
+#### Inpainting with Refinement
+An additional refinement step enforces edge coherence for higher realism while retaining road geometry.
+
+The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/stable_diffusion_inpainting_controlnet_refining.tar.xz)
+
+**Prompt**: "A street in autumn season"
+<p align="center">
+  <img src="images/inpainting-with-refinement/a-street-in-autumn-season_0.jpg" width="19%"/>
+  <img src="images/inpainting-with-refinement/a-street-in-autumn-season_1.jpg" width="19%"/>
+  <img src="images/inpainting-with-refinement/a-street-in-autumn-season_2.jpg" width="19%"/>
+  <img src="images/inpainting-with-refinement/a-street-in-autumn-season_3.jpg" width="19%"/>
+  <img src="images/inpainting-with-refinement/a-street-in-autumn-season_4.jpg" width="19%"/>
+</p>
+
+**Prompt**: "A street during dust storm"
+<p align="center">
+  <img src="images/inpainting-with-refinement/a-street-with-dust-storm_0.jpg" width="19%"/>
+  <img src="images/inpainting-with-refinement/a-street-with-dust-storm_1.jpg" width="19%"/>
+  <img src="images/inpainting-with-refinement/a-street-with-dust-storm_2.jpg" width="19%"/>
+  <img src="images/inpainting-with-refinement/a-street-with-dust-storm_3.jpg" width="19%"/>
+  <img src="images/inpainting-with-refinement/a-street-with-dust-storm_4.jpg" width="19%"/>
+</p>
