@@ -7,6 +7,12 @@ This repository addresses the limited operational design domain (ODD) coverage i
   <img src="carla-day-to-night.gif" width="45%" alt="CARLA Day-to-Night Preview"/>
 </p>
 
+## Table of Contents
+- [Purpose](#purpose)
+- [Provenance](#provenance)
+- [Data](#data)
+- [Setup](#setup)
+- [Usage](#usage)
 
 ## Purpose
 This artifact provides **domain augmentation** techniques for **Autonomous Driving System (ADS) testing**, using three diffusion-based methods (Instruction-editing, Inpainting, and Inpainting with Refinement). These methods generate augmented driving images of diverse operational design domain (ODD) conditions (e.g., weather, time of day) while preserving the road structure. The artifact facilitates **system-level ADS testing** in both Udacity and CARLA simulators, allowing researchers to uncover failures that standard simulator setups might miss.
@@ -43,10 +49,10 @@ Our datasets contain synthetic driving images depicting diverse Operational Desi
 - **Usage Permissions:** Ensure compliance with the simulator’s terms of service if you plan to distribute or reuse the base simulator outputs.  
 
 **Storage Requirements:**  
-- **Data Size:** Each augmented dataset may range from 7GB to 10 GB, depending on the number of scenarios and image resolution.  
+- **Data Size:** Each augmented dataset may range from 7 GB to 10 GB, depending on the number of scenarios and image resolution.  
 - **Disk Space:** Users should have sufficient storage (e.g., an additional 50GB) if all datasets are downloaded and expanded simultaneously.
 
-> **Note**: Users must verify they have adequate **Storage** if employing these datasets for deep learning tasks or further augmentation. All datasets are compressed as 'tar.xz' files.
+> **Note**: Users must verify they have adequate **Storage** if employing these datasets for deep learning tasks or further augmentation. All datasets are compressed as 'tar.xz' files. Overall, we recommend to have 200 GB.
 
 ### Augmented Datasets
 
@@ -57,9 +63,9 @@ We augmented the images collected from the Udacity simulator using three domain 
 #### Instruction-editing
 Given an initial image and a text instruction (e.g., “change season to autumn”), this approach edits the scene accordingly.
 
-The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/instructpix2pix.tar.xz)
+The augmented dataset (7.0 GB compressed) can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/instructpix2pix.tar.xz)
 
-**Prompt**: "Change season to autumn"
+> **Prompt**: "Change season to autumn"
 <p align="center">
   <img src="images/instruction-editing/change-season-to-autumn_0.jpg" width="19%"/>
   <img src="images/instruction-editing/change-season-to-autumn_1.jpg" width="19%"/> 
@@ -68,7 +74,7 @@ The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-n
   <img src="images/instruction-editing/change-season-to-autumn_4.jpg" width="19%"/>
 </p>
 
-**Prompt**: "Change time to night"
+> **Prompt**: "Change time to night"
 <p align="center">
   <img src="images/instruction-editing/change-time-to-night_0.jpg" width="19%"/>
   <img src="images/instruction-editing/change-time-to-night_1.jpg" width="19%"/> 
@@ -81,9 +87,9 @@ The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-n
 #### Inpainting
 Preserves the road pixels via a mask and regenerates the background with a text prompt.
 
-The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/stable_diffusion_inpainting.tar.xz)
+The augmented dataset (7.7 GB compressed) can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/stable_diffusion_inpainting.tar.xz)
 
-**Prompt**: "A street in autumn season"
+> **Prompt**: "A street in autumn season"
 <p align="center">
   <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_0.jpg" width="19%"/>
   <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_1.jpg" width="19%"/>
@@ -92,7 +98,7 @@ The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-n
   <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_4.jpg" width="19%"/>
 </p>
 
-**Prompt**: "A street in night time"
+> **Prompt**: "A street in night time"
 <p align="center">
   <img src="images/inpainting/A-street-in-night-time_0.jpg" width="19%"/>
   <img src="images/inpainting/A-street-in-night-time_1.jpg" width="19%"/>
@@ -101,7 +107,7 @@ The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-n
   <img src="images/inpainting/A-street-in-night-time_4.jpg" width="19%"/>
 </p>
 
-**Prompt**: "A street during dust storm"
+> **Prompt**: "A street during dust storm"
 <p align="center">
   <img src="images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_0.jpg" width="19%"/>
   <img src="images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_1.jpg" width="19%"/>
@@ -113,9 +119,9 @@ The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-n
 #### Inpainting with Refinement
 An additional refinement step enforces edge coherence for higher realism while retaining road geometry.
 
-The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/stable_diffusion_inpainting_controlnet_refining.tar.xz)
+The augmented dataset (9.9 GB compressed) can be accessed from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/stable_diffusion_inpainting_controlnet_refining.tar.xz)
 
-**Prompt**: "A street in autumn season"
+> **Prompt**: "A street in autumn season"
 <p align="center">
   <img src="images/inpainting-with-refinement/a-street-in-autumn-season_0.jpg" width="19%"/>
   <img src="images/inpainting-with-refinement/a-street-in-autumn-season_1.jpg" width="19%"/>
@@ -124,7 +130,7 @@ The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-n
   <img src="images/inpainting-with-refinement/a-street-in-autumn-season_4.jpg" width="19%"/>
 </p>
 
-**Prompt**: "A street during dust storm"
+> **Prompt**: "A street during dust storm"
 <p align="center">
   <img src="images/inpainting-with-refinement/a-street-with-dust-storm_0.jpg" width="19%"/>
   <img src="images/inpainting-with-refinement/a-street-with-dust-storm_1.jpg" width="19%"/>
@@ -132,3 +138,39 @@ The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-n
   <img src="images/inpainting-with-refinement/a-street-with-dust-storm_3.jpg" width="19%"/>
   <img src="images/inpainting-with-refinement/a-street-with-dust-storm_4.jpg" width="19%"/>
 </p>
+
+## Setup
+
+This artifact includes **executable components** (ADS simulations and augmentation scripts) that require a suitable environment. Below is a detailed guide to preparing and running the artifact:
+
+**Hardware Requirements**  
+- **GPU**: We strongly recommend an NVIDIA GPU (CUDA-compatible) with at least 16 GB of dedicated video memory. (We tested with NVIDIA 4090 24 GB)
+- **CPU & RAM**: A modern multi-core CPU (e.g., 4+ cores) and at least 32 GB of system memory are suggested for efficient training and inference. (We tested with a Ryzen 5950X 32 cores and 64 GB memory)
+- **Disk Space**: The datasets can require up to 50 GB when expanded. Verify you have adequate free storage. Pretrained checkpoints take about 100 GB, and the checkpoints of distilled models require at least 50 GB. Overall, we recommend to have at least 200 GB to fully replicate this artifact.
+
+**Software Requirements**  
+- **Operating System**: Linux (tested on Ubuntu 24.04), though other UNIX-like systems may work with minor adjustments.  
+- **CUDA & Drivers**: For GPU-accelerated tasks, install CUDA (tested with version 12.1) and the corresponding NVIDIA drivers.  
+- **Python**: Version 3.8 or higher (tested with Python 3.10).  
+- **Dependencies**: Listed in `requirements.txt` (install using `pip install -r requirements.txt`).
+
+> **Docker**: We do not recommend to use this artifact in a Docker environment since it requires NVIDIA Drivers and to redirect the X Server output for rendering simulations.
+
+**Quick Verification**  
+1. **Clone the Repository**:  
+   ```bash
+   git clone https://github.com/deib-polimi/online-testing-augmented-simulator
+   cd online-testing-augmented-simulator
+   ```
+2. **Install Python Packages**:  
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. **Check GPU availability**:  
+   ```bash
+   python -c "import torch; print(torch.cuda.is_available())"
+   ```
+   If `True`, your system recognizes the GPU successfully.
+
+## Usage
+
