@@ -317,5 +317,10 @@ Follow their instruction to install CARLA and InterFuser.
    > Note that, to improve monitoring of the checkpoints, we used wandb.
 
    > It is possible to disable this service by removing the following lines of code (line 97) `wandb_logger = WandbLogger(project=f"cyclegan_{version}", dir=LOG_DIR.joinpath(f"cyclegan_{version}"))` and (line 103) `  logger=[wandb_logger],`.
+   
+4. **Run the distilled conditions**:
+   Replace the original `interfuser_agent.py` script with the one in this project.
 
-   > Each script might require 48+ hours.
+   ```bash
+   CUDA_VISIBLE_DEVICES=0 ./leaderboard/scripts/run_evaluation.sh
+   ```
