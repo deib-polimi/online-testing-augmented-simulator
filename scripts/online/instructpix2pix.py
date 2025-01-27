@@ -81,7 +81,6 @@ if __name__ == '__main__':
 
 
     # 6. Drive
-    # 6. Drive
     for prompt, model_name in list(itertools.product(
             ALL_INSTRUCTIONS,
             ['dave2', 'epoch', 'chauffeur', 'vit']

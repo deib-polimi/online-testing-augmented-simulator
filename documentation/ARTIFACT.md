@@ -224,8 +224,59 @@ This artifact includes **executable components** (ADS simulations and augmentati
    mv epoch.ckpt $MODEL_DIR/epoch/
    mv vit.ckpt $MODEL_DIR/vit/
    ```
+   
+7. **Setup PythonPath**:
+   ```bash
+   export PYTHONPATH="[THIS PROJECT DIRECTORY (online-testing-augmented-simulator)]"
+   ```
 
 ## Usage
 
+## Udacity Simulator
 
+1. **Nominal Condition**:
+   ```bash
+   python3 scripts/online/nominal.py
+   ```
+   
+2. **Augmented Condition (diffusion models)**:
+   ```bash
+   python3 scripts/online/instructpix2pix.py
+   python3 scripts/online/stable_diffusion_inpainting.py
+   python3 scripts/online/stable_diffusion_inpainting_controlnet_refining.py
+   ```
+   
+   > Each script might require 48+ hours.
 
+   To reduce the duration of the script, reduce the amount of domains to be synthesized.
+   For example, for InstructPix2Pix, in `scripts/online/instructpix2pix.py`, edit:
+   ```python
+    # 6. Drive
+    for prompt, model_name in list(itertools.product(
+            ALL_INSTRUCTIONS, # -> ["Make it autumn", "Make it summer", ...]
+            ['dave2', 'epoch', 'chauffeur', 'vit']
+    )):
+    ```
+
+3. **Train the distilled models**:
+
+   Before running the script, configure `domain` and `approach` (lines 27-52).
+   ```bash
+   python3 models/cyclegan/train.py
+   ```
+
+   > Note that, to improve monitoring of the checkpoints, we used wandb.
+
+   > It is possible to disable this service by removing the following lines of code (line 97) `wandb_logger = WandbLogger(project=f"cyclegan_{version}", dir=LOG_DIR.joinpath(f"cyclegan_{version}"))` and (line 103) `  logger=[wandb_logger],`.
+
+   > Each script might require 24+ hours.
+
+4. **Distilled and augmented conditions**:
+
+   ```bash
+   python3 scripts/online/instructpix2pix.py
+   python3 scripts/online/stable_diffusion_inpainting.py
+   python3 scripts/online/stable_diffusion_inpainting_controlnet_refining.py
+   ```
+   
+   > Each script might require 24+ hours.

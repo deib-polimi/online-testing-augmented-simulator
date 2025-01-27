@@ -17,7 +17,7 @@ if __name__ == '__main__':
     for approach, model in itertools.product([
         'instructpix2pix',
     ],[
-        'dave2', 'chauffeur', 'epoch'
+        'dave2', 'chauffeur', 'epoch', 'vit'
     ]
     ):
 

@@ -27,7 +27,7 @@ if __name__ == '__main__':
         'stable_diffusion_inpainting',
         'stable_diffusion_inpainting_controlnet_refining'
     ],[
-        'dave2', 'chauffeur', 'epoch'
+        'dave2', 'chauffeur', 'epoch', 'vit'
     ]
     ):
 

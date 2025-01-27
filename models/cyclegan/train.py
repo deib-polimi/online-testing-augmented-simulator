@@ -67,7 +67,7 @@ if __name__ == '__main__':
         input_shape = (3, 320, 160)
 
         sub_datasets = []
-        for model_name in ['dave2', 'chauffeur', 'epoch']:
+        for model_name in ['dave2', 'chauffeur', 'epoch', 'vit']:
             run_name = f"online/{approach}/{model_name}/{re.sub('[^0-9a-zA-Z]+', '-', prompt)}"
             sub_datasets += [ImagePairDataset(
                 [x for x in RESULT_DIR.joinpath(run_name).joinpath("before", "image").glob("*.jpg")],
