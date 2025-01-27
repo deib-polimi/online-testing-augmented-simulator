@@ -1,10 +1,10 @@
 # Autonomous Driving System Testing with Domain Augmentation
 
-This repository provides **domain augmentation** techniques for **Autonomous Driving System (ADS) testing**. By integrating diffusion-model-based methods (Instruction-editing, Inpainting, and Inpainting with Refinement) into a **physics-based simulator**, our approach uncovers ADS failures that standard simulations might overlook.
+This repository addresses the limited operational design domain (ODD) coverage in current autonomous driving simulators by integrating generative artificial intelligence techniques with physics-based simulation. Specifically, we implement three diffusion-based strategies—Instruction-editing, Inpainting, and Inpainting with Refinement—to produce augmented images representing new ODDs. An automated segmentation-based validator ensures semantic realism and achieved as low as 3% false positives in our human study, preserving image quality and correctness. System-level experiments showed that these domain augmentation methods increase ODD coverage, effectively uncovering previously undetected ADS failures before real-world testing.
 
 <p align="center">
-  <img src="documentation/udacity-day-to-sunset.gif" width="50.36%" alt="Udacity Day-to-Sunset Preview"/>
-  <img src="documentation/carla-day-to-night.gif" width="42%" alt="CARLA Day-to-Night Preview"/>
+  <img src="documentation/udacity-day-to-sunset.gif" width="53.42%" alt="Udacity Day-to-Sunset Preview"/>
+  <img src="documentation/carla-day-to-night.gif" width="44.56%" alt="CARLA Day-to-Night Preview"/>
 </p>
 
 ## Table of Contents
