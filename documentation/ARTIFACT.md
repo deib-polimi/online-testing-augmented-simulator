@@ -174,5 +174,57 @@ This artifact includes **executable components** (ADS simulations and augmentati
    ```
    If `True`, your system recognizes the GPU successfully.
 
+4. **GPU Configuration**:
+   Please choose which GPU device you want to use with from `utils/conf.py`:
+   ```Python
+   DEFAULT_DEVICE = "cuda:0"        # using device 0
+   ```
+   
+5. **Paths Configuration**:
+   Please setup the folder where to **save** the results `utils/path_utils.py`:
+   ```Python
+   import pathlib
+   
+   PROJECT_DIR = pathlib.Path(__file__).parent.parent.absolute()
+   RESULT_DIR = ...
+   MODEL_DIR = ...
+   LOG_DIR = ...
+   DATASET_DIR = ...
+   ```
+   
+6. **Udacity Simulator**:
+   Please download the simulator from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/udacity-linux.tar.xz), run from terminal:
+   ```bash
+   wget https://icse-2025.s3.eu-north-1.amazonaws.com/udacity-linux.tar.xz
+   tar -xJf udacity-linux.tar.xz
+   ```
+   Check if the Udacity simulator is running correctly:
+   ```bash
+   cd simulatorv2
+   ./udacity.x86_64
+   ```
+   > Ensure that you have an active graphic server (i.e., Xorg).
+
+   > Ensure that you have Vulkan API installed (`sudo apt install libvulkan1`).
+   
+7. **Pretrained Driving Checkpoints**:
+   Move the pretrained checkpoints into your models directory:
+   ```bash
+   export MODEL_DIR="[INSERT YOUR MODEL DIRECTORY]"
+   
+   tar -xJf udacity-linux.tar.xz
+   
+   mkdir $MODEL_DIR/dave2
+   mkdir $MODEL_DIR/chauffeur
+   mkdir $MODEL_DIR/epoch
+   mkdir $MODEL_DIR/vit
+   
+   mv dave2.ckpt $MODEL_DIR/dave2/
+   mv chauffeur.ckpt $MODEL_DIR/chauffeur/
+   mv epoch.ckpt $MODEL_DIR/epoch/
+   mv vit.ckpt $MODEL_DIR/vit/
+   ```
+
+
 ## Usage
 
