@@ -324,3 +324,6 @@ Follow their instruction to install CARLA and InterFuser.
    ```bash
    CUDA_VISIBLE_DEVICES=0 ./leaderboard/scripts/run_evaluation.sh
    ```
+
+## LICENSE
+All code within this repository is under [MIT LICENSE](https://github.com/deib-polimi/online-testing-augmented-simulator/blob/master/LICENSE) 
