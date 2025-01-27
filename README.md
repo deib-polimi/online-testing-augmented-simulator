@@ -113,20 +113,20 @@ The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-n
 
 **Prompt**: "Change season to autumn"
 <p align="center">
-  <img src="images/instruction-editing/change-season-to-autumn_0.jpg" width="19%"/>
-  <img src="images/instruction-editing/change-season-to-autumn_1.jpg" width="19%"/> 
-  <img src="images/instruction-editing/change-season-to-autumn_2.jpg" width="19%"/>
-  <img src="images/instruction-editing/change-season-to-autumn_3.jpg" width="19%"/> 
-  <img src="images/instruction-editing/change-season-to-autumn_4.jpg" width="19%"/>
+  <img src="documentation/images/instruction-editing/change-season-to-autumn_0.jpg" width="19%"/>
+  <img src="documentation/images/instruction-editing/change-season-to-autumn_1.jpg" width="19%"/> 
+  <img src="documentation/images/instruction-editing/change-season-to-autumn_2.jpg" width="19%"/>
+  <img src="documentation/images/instruction-editing/change-season-to-autumn_3.jpg" width="19%"/> 
+  <img src="documentation/images/instruction-editing/change-season-to-autumn_4.jpg" width="19%"/>
 </p>
 
 **Prompt**: "Change time to night"
 <p align="center">
-  <img src="images/instruction-editing/change-time-to-night_0.jpg" width="19%"/>
-  <img src="images/instruction-editing/change-time-to-night_1.jpg" width="19%"/> 
-  <img src="images/instruction-editing/change-time-to-night_2.jpg" width="19%"/>
-  <img src="images/instruction-editing/change-time-to-night_3.jpg" width="19%"/> 
-  <img src="images/instruction-editing/change-time-to-night_4.jpg" width="19%"/>
+  <img src="documentation/images/instruction-editing/change-time-to-night_0.jpg" width="19%"/>
+  <img src="documentation/images/instruction-editing/change-time-to-night_1.jpg" width="19%"/> 
+  <img src="documentation/images/instruction-editing/change-time-to-night_2.jpg" width="19%"/>
+  <img src="documentation/images/instruction-editing/change-time-to-night_3.jpg" width="19%"/> 
+  <img src="documentation/images/instruction-editing/change-time-to-night_4.jpg" width="19%"/>
 </p>
 
 
@@ -137,29 +137,29 @@ The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-n
 
 **Prompt**: "A street in autumn season"
 <p align="center">
-  <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_0.jpg" width="19%"/>
-  <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_1.jpg" width="19%"/>
-  <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_2.jpg" width="19%"/>
-  <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_3.jpg" width="19%"/>
-  <img src="images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_4.jpg" width="19%"/>
+  <img src="documentation/images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_0.jpg" width="19%"/>
+  <img src="documentation/images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_1.jpg" width="19%"/>
+  <img src="documentation/images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_2.jpg" width="19%"/>
+  <img src="documentation/images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_3.jpg" width="19%"/>
+  <img src="documentation/images/inpainting/A-street-in-autumn-season-photo-taken-from-a-car_4.jpg" width="19%"/>
 </p>
 
 **Prompt**: "A street in night time"
 <p align="center">
-  <img src="images/inpainting/A-street-in-night-time_0.jpg" width="19%"/>
-  <img src="images/inpainting/A-street-in-night-time_1.jpg" width="19%"/>
-  <img src="images/inpainting/A-street-in-night-time_2.jpg" width="19%"/>
-  <img src="images/inpainting/A-street-in-night-time_3.jpg" width="19%"/>
-  <img src="images/inpainting/A-street-in-night-time_4.jpg" width="19%"/>
+  <img src="documentation/images/inpainting/A-street-in-night-time_0.jpg" width="19%"/>
+  <img src="documentation/images/inpainting/A-street-in-night-time_1.jpg" width="19%"/>
+  <img src="documentation/images/inpainting/A-street-in-night-time_2.jpg" width="19%"/>
+  <img src="documentation/images/inpainting/A-street-in-night-time_3.jpg" width="19%"/>
+  <img src="documentation/images/inpainting/A-street-in-night-time_4.jpg" width="19%"/>
 </p>
 
 **Prompt**: "A street during dust storm"
 <p align="center">
-  <img src="images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_0.jpg" width="19%"/>
-  <img src="images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_1.jpg" width="19%"/>
-  <img src="images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_2.jpg" width="19%"/>
-  <img src="images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_3.jpg" width="19%"/>
-  <img src="images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_4.jpg" width="19%"/>
+  <img src="documentation/images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_0.jpg" width="19%"/>
+  <img src="documentation/images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_1.jpg" width="19%"/>
+  <img src="documentation/images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_2.jpg" width="19%"/>
+  <img src="documentation/images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_3.jpg" width="19%"/>
+  <img src="documentation/images/inpainting/A-street-in-dust-storm-weather-photo-taken-from-a-car_4.jpg" width="19%"/>
 </p>
 
 ### Inpainting with Refinement
@@ -169,20 +169,20 @@ The augmented dataset can be accessed from this [link](https://icse-2025.s3.eu-n
 
 **Prompt**: "A street in autumn season"
 <p align="center">
-  <img src="images/inpainting-with-refinement/a-street-in-autumn-season_0.jpg" width="19%"/>
-  <img src="images/inpainting-with-refinement/a-street-in-autumn-season_1.jpg" width="19%"/>
-  <img src="images/inpainting-with-refinement/a-street-in-autumn-season_2.jpg" width="19%"/>
-  <img src="images/inpainting-with-refinement/a-street-in-autumn-season_3.jpg" width="19%"/>
-  <img src="images/inpainting-with-refinement/a-street-in-autumn-season_4.jpg" width="19%"/>
+  <img src="documentation/images/inpainting-with-refinement/a-street-in-autumn-season_0.jpg" width="19%"/>
+  <img src="documentation/images/inpainting-with-refinement/a-street-in-autumn-season_1.jpg" width="19%"/>
+  <img src="documentation/images/inpainting-with-refinement/a-street-in-autumn-season_2.jpg" width="19%"/>
+  <img src="documentation/images/inpainting-with-refinement/a-street-in-autumn-season_3.jpg" width="19%"/>
+  <img src="documentation/images/inpainting-with-refinement/a-street-in-autumn-season_4.jpg" width="19%"/>
 </p>
 
 **Prompt**: "A street during dust storm"
 <p align="center">
-  <img src="images/inpainting-with-refinement/a-street-with-dust-storm_0.jpg" width="19%"/>
-  <img src="images/inpainting-with-refinement/a-street-with-dust-storm_1.jpg" width="19%"/>
-  <img src="images/inpainting-with-refinement/a-street-with-dust-storm_2.jpg" width="19%"/>
-  <img src="images/inpainting-with-refinement/a-street-with-dust-storm_3.jpg" width="19%"/>
-  <img src="images/inpainting-with-refinement/a-street-with-dust-storm_4.jpg" width="19%"/>
+  <img src="documentation/images/inpainting-with-refinement/a-street-with-dust-storm_0.jpg" width="19%"/>
+  <img src="documentation/images/inpainting-with-refinement/a-street-with-dust-storm_1.jpg" width="19%"/>
+  <img src="documentation/images/inpainting-with-refinement/a-street-with-dust-storm_2.jpg" width="19%"/>
+  <img src="documentation/images/inpainting-with-refinement/a-street-with-dust-storm_3.jpg" width="19%"/>
+  <img src="documentation/images/inpainting-with-refinement/a-street-with-dust-storm_4.jpg" width="19%"/>
 </p>
 
 ## Human Study
