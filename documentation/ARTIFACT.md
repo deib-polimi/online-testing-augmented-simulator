@@ -38,7 +38,7 @@ This artifact includes **nontrivial datasets** generated from virtual driving si
 Our datasets contain synthetic driving images depicting diverse Operational Design Domain (ODD) conditions (e.g., weather, time of day). These images are exclusively generated from physics-based simulators (Udacity and CARLA), ensuring no personally identifiable information is present.
 
 **Data Provenance:**  
-1. **Simulator Outputs:** The base images come from the Udacity Self-Driving Car Simulator and the CARLA simulator (version [PLACEHOLDER]).
+1. **Simulator Outputs:** The base images come from the Udacity Self-Driving Car Simulator and the CARLA simulator (version 0.9.10).
 2. **Augmented Images:** We applied diffusion-based augmentation (Instruction-editing, Inpainting, and Inpainting with Refinement) to produce new or modified variants of the simulator outputs.  
    - Each augmented dataset is distributed in compressed archives (e.g., `.tar.xz`) hosted on a public repository or archival service.  
    - See [Augmented Datasets](#augmented-datasets) for more details and direct download links.
