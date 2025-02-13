@@ -154,7 +154,26 @@ This artifact includes **executable components** (ADS simulations and augmentati
 - **Python**: Version 3.8 or higher (tested with Python 3.10).  
 - **Dependencies**: Listed in `requirements.txt` (install using `pip install -r requirements.txt`).
 
-> **Docker**: We do not recommend to use this artifact in a Docker environment since it requires NVIDIA Drivers and to redirect the X Server output for rendering driving simulations.
+**Docker Environment**  
+
+> **Docker**: We do not recommend to use this artifact in a Docker environment since it requires NVIDIA Drivers and to redirect the X Server output for rendering driving simulations. The proposed image was not used to run our experiments, and we highly recommend to run the experiments without a virtualized environment.
+
+1. To build the docker image:
+   ```bash
+   docker build . -t online-testing-augmented-simulator
+   ```
+
+2. Create a directory to save results, and run the docker image:
+   ```bash
+   docker run
+   --rm 
+   --gpus all     
+   --net=host     
+   -e DISPLAY=$DISPLAY     
+   -v /tmp/.X11-unix:/tmp/.X11-unix:rw  
+   -v {PATH OF THE RESULT DIRECTORY}:/online-testing-augmented-simulator/results/  
+   online-testing-aumented-simulator
+   ```
 
 **Quick Verification**  
 1. **Clone the Repository**:  
@@ -324,6 +343,20 @@ Follow their instruction to install CARLA and InterFuser.
    ```bash
    CUDA_VISIBLE_DEVICES=0 ./leaderboard/scripts/run_evaluation.sh
    ```
+
+## New Scenarios
+
+New scenarios can be added by editing the python file `domains/domains.py` which contains all the domains that were explored in our experiments. They are:
+
+```python3
+WEATHERS = ["cloudy", "dust storm", "foggy", "lightnings", "overcast", "smoke", "sunny"]
+SEASONS = ["spring", "summer", "autumn", "winter"]
+COUNTRIES = ["usa", "china", "japan", "australia", "italy", "france", "canada", "germany", "india", "england", "brazil", "morocco"]
+CITIES = ["new york", "san francisco", "chicago", "beijing", "tokyo", "sidney", "rome", "paris",
+          "london", "toronto", "el cairo", "berlin"]
+LOCATIONS = ["coastal area", "desert area", "mountain area", "rural area", "seaside area", "lake area", "forest area", "rivers", "plains"]
+TIMES = ["morning", "afternoon", "evening", "night", "sunrise", "sunset", "dawn", "dusk"]
+```
 
 ## LICENSE
 All code within this repository is under [MIT LICENSE](https://github.com/deib-polimi/online-testing-augmented-simulator/blob/master/LICENSE) 
