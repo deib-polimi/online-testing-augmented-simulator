@@ -196,11 +196,10 @@ This artifact includes **executable components** (ADS simulations and augmentati
    Please download the simulator from this [link](https://icse-2025.s3.eu-north-1.amazonaws.com/udacity-linux.tar.xz), run from terminal:
    ```bash
    wget https://icse-2025.s3.eu-north-1.amazonaws.com/udacity-linux.tar.xz
-   tar -xJf pretrained-udacity-models.tar.xz
+   tar -xJf udacity-linux.tar.xz
    ```
    Check if the Udacity simulator is running correctly:
    ```bash   
-   tar -xJf udacity-linux.tar.xz
    
    cd simulatorv2
    ./udacity.x86_64
@@ -213,6 +212,7 @@ This artifact includes **executable components** (ADS simulations and augmentati
    Move the pretrained checkpoints into your models directory:
    ```bash
    export MODEL_DIR="[INSERT YOUR MODEL DIRECTORY]"
+   tar -xJf pretrained-udacity-models.tar.xz
    
    mkdir $MODEL_DIR/dave2
    mkdir $MODEL_DIR/chauffeur
