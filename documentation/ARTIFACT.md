@@ -199,7 +199,9 @@ This artifact includes **executable components** (ADS simulations and augmentati
    tar -xJf pretrained-udacity-models.tar.xz
    ```
    Check if the Udacity simulator is running correctly:
-   ```bash
+   ```bash   
+   tar -xJf udacity-linux.tar.xz
+   
    cd simulatorv2
    ./udacity.x86_64
    ```
@@ -212,8 +214,6 @@ This artifact includes **executable components** (ADS simulations and augmentati
    ```bash
    export MODEL_DIR="[INSERT YOUR MODEL DIRECTORY]"
    
-   tar -xJf udacity-linux.tar.xz
-   
    mkdir $MODEL_DIR/dave2
    mkdir $MODEL_DIR/chauffeur
    mkdir $MODEL_DIR/epoch
@@ -225,7 +225,7 @@ This artifact includes **executable components** (ADS simulations and augmentati
    mv vit.ckpt $MODEL_DIR/vit/
    ```
    
-7. **Setup PythonPath**:
+8. **Setup PythonPath**:
    ```bash
    export PYTHONPATH="[THIS PROJECT DIRECTORY (online-testing-augmented-simulator)]"
    ```
