@@ -22,11 +22,13 @@ This repository addresses the limited operational design domain (ODD) coverage i
 
 ## Installation and Usage
 
-1. **Clone this repository**:
-   ```bash
-   git clone https://github.com/deib-polimi/online-testing-augmented-simulator
-   cd online-testing-augmented-simulator
-    ```
+**Clone this repository**:
+```bash
+ git clone https://github.com/deib-polimi/online-testing-augmented-simulator
+ cd online-testing-augmented-simulator
+```
+
+The full documentation on setup and usage can be found [here](documentation/ARTIFACT.md)
 
 ## Requirements
 To set up and run this project, ensure you have the following:
