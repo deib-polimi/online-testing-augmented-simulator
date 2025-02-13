@@ -1,6 +1,6 @@
 import pathlib
 import itertools
-
+import os
 import pandas as pd
 
 from domains.domain import DOMAIN_CATEGORIES_MAP
@@ -8,11 +8,12 @@ from domains.instruction import ALL_INSTRUCTIONS_FOLDER_MAP
 
 from domains.prompt import ALL_PROMPTS_FOLDER_MAP
 
+BASE_DIR = os.environ.get("BASE_DIR", "media/banana/data")
 PROJECT_DIR = pathlib.Path(__file__).parent.parent.absolute()
-RESULT_DIR = pathlib.Path("/media/banana/data/results/online-testing")
-MODEL_DIR = pathlib.Path("/media/banana/data/models/online-testing")
-LOG_DIR = pathlib.Path("/media/banana/data/logs/online-testing")
-DATASET_DIR = pathlib.Path("/media/banana/data/dataset")
+RESULT_DIR = pathlib.Path(BASE_DIR, "results/online-testing")
+MODEL_DIR = pathlib.Path(BASE_DIR, "models/online-testing")
+LOG_DIR = pathlib.Path(BASE_DIR, "logs/online-testing")
+DATASET_DIR = pathlib.Path(BASE_DIR, "dataset")
 
 for directory in [RESULT_DIR, MODEL_DIR, LOG_DIR, DATASET_DIR]:
     if not directory.exists():

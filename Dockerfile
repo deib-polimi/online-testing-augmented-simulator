@@ -16,30 +16,39 @@ RUN apt-get update && \
         ffmpeg \
         libgl1-mesa-glx \
         wget \
+        vulkan-tools \
+        libvulkan1 \
+        mesa-vulkan-drivers \
         libglib2.0-0 && \
     rm -rf /var/lib/apt/lists/*
 
-# Set python3.10 as default
+# Uncomment these lines if you want to set python3.10 as the default python and pip versions
 # RUN ln -s /usr/bin/python3.10 /usr/bin/python && \
 #     ln -s /usr/bin/pip3 /usr/bin/pip
 
-# Create a working directory and copy the project
-RUN git clone https://github.com/deib-polimi/online-testing-augmented-simulator
+# Create directories for requirements and models
+RUN mkdir /requirements
+RUN mkdir /models
 
+# Copy requirements file into container
+COPY requirements.txt /requirements
+
+# Install Python requirements with caching enabled
+RUN --mount=type=cache,target=/root/.cache/pip pip install --upgrade pip
+RUN --mount=type=cache,target=/root/.cache/pip pip install -r /requirements/requirements.txt
+
+# Copy the project into the container (assumes the Dockerfile is in the repository root)
+COPY . online-testing-augmented-simulator
+
+# Set working directory and environment variables
 WORKDIR online-testing-augmented-simulator
-
-# Install Python requirements
-# If 'requirements.txt' is in the root of the repo, run:
-RUN pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Install Python requirements
-# If 'requirements.txt' is in the root of the repo, run:
-RUN pip install --no-cache-dir --upgrade pip
-RUN pip install --no-cache-dir -r requirements.txt
+ENV PYTHONPATH=/online-testing-augmented-simulator
+ENV BASE_DIR=/online-testing-augmented-simulator
+ENV MODEL_DIR=/online-testing-augmented-simulator/models
+ENV RESULTS_DIR=/online-testing-augmented-simulator/results
 
 # Make sure our experiment script is executable
-RUN chmod +x /app/run_experiments.sh
+RUN chmod +x run_experiments.sh
 
 # By default, run the experiment script
-CMD ["/app/run_experiments.sh"]
+CMD ["./run_experiments.sh"]

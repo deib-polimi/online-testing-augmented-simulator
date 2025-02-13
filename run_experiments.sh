@@ -2,56 +2,82 @@
 #
 # run_experiments.sh
 #
-# This script runs all experiments as described in the repository.
-# It assumes that you have cloned the repository and have all subfolders
-# and scripts in place (e.g., 'scripts/offline', 'scripts/online', etc.).
+# This script runs all experiments as described in the repository. It assumes that you have
+# cloned the repository and that all subdirectories (e.g., 'scripts/offline', 'scripts/online', etc.)
+# are in place.
 #
-# When this script is executed inside the Docker container, it will:
-#  1. (Optionally) extract any needed archives (pretrained models, etc.)
-#  2. Run the offline experiments
-#  3. Run the online experiments (requires the Udacity simulator to be running)
-#  4. Run OOD analysis experiments
-#  5. Run timing analysis
+# When executed inside the Docker container, it will:
+#   1. Optionally extract any needed archives (e.g., pretrained models, simulator binaries)
+#   2. Prepare necessary directories and move model files if they have not been set up yet.
+#   3. Run the online experiments sequentially.
+#
+# Note:
+#   - The simulator extraction is performed only if its target directory is not present.
+#   - Directories for models are created only if they do not exist, and model checkpoint files
+#     are moved only if they are not already in place.
+#   - Ensure that the environment variable BASE_DIR is set; if not, it defaults to "/".
+#
 
-set -e  # Exit immediately if a command exits with a non-zero status
-set -u  # Treat unset variables as an error
+# Exit immediately if a command exits with a non-zero status and treat unset variables as errors
+set -e
+set -u
+
+# Set BASE_DIR: use environment variable BASE_DIR if exists; otherwise default to "/"
+BASE_DIR="${BASE_DIR:-/}"
 
 echo "===== Starting experiments for online-testing-augmented-simulator ====="
 
-# Optional Step: Extract archives if present
-if [[ -f pretrained-udacity-models.tar.xz ]]; then
-  echo "Extracting pretrained models..."
-  tar -xf pretrained-udacity-models.tar.xz
+# -------------------------------
+# Step 1: Extract Simulator Archive
+# -------------------------------
+# Check if the simulator has already been extracted (assumes extraction creates a directory named "udacity-linux")
+if [ ! -d "udacity-linux" ]; then
+  echo "Extracting udacity-linux simulator archive..."
+  tar -xJf udacity-linux.tar.xz
+else
+  echo "Simulator archive already extracted; skipping extraction."
 fi
 
-if [[ -f udacity-gym-env.tar.xz ]]; then
-  echo "Extracting Udacity gym environment..."
-  tar -xf udacity-gym-env.tar.xz
+# -------------------------------
+# Step 2: Extract Pretrained Models Archive
+# -------------------------------
+# Check if the archive has been extracted by verifying one of the expected model files exists in the target location.
+MODEL_TARGET_DIR="$BASE_DIR/models/online-testing"
+DAVE2_MODEL="${MODEL_TARGET_DIR}/dave2/dave2.ckpt"
+
+if [ ! -f "${DAVE2_MODEL}" ]; then
+  echo "Extracting pretrained models archive..."
+  tar -xJf pretrained-udacity-models.tar.xz
+
+  # Create target directories for each model if they do not exist.
+  mkdir -p "${MODEL_TARGET_DIR}/dave2/"
+  mkdir -p "${MODEL_TARGET_DIR}/chauffeur/"
+  mkdir -p "${MODEL_TARGET_DIR}/epoch/"
+  mkdir -p "${MODEL_TARGET_DIR}/vit/"
+
+  # Move model files into their respective directories if they exist in the current directory.
+  [ -f "dave2.ckpt" ] && mv dave2.ckpt "${MODEL_TARGET_DIR}/dave2/"
+  [ -f "chauffeur.ckpt" ] && mv chauffeur.ckpt "${MODEL_TARGET_DIR}/chauffeur/"
+  [ -f "epoch.ckpt" ] && mv epoch.ckpt "${MODEL_TARGET_DIR}/epoch/"
+  [ -f "vit.ckpt" ] && mv vit.ckpt "${MODEL_TARGET_DIR}/vit/"
+else
+  echo "Pretrained models already set up in ${MODEL_TARGET_DIR}; skipping extraction and file moves."
 fi
 
-# 1. Offline augmentation experiments
-echo "----- Running offline augmentation experiments -----"
-python3 scripts/offline/instructpix2pix.py
-python3 scripts/offline/stable_diffusion_inpainting.py
-python3 scripts/offline/stable_diffusion_inpainting_controlnet_refining.py
+# -------------------------------
+# Step 3: Run Online Experiments
+# -------------------------------
+# Execute the experiment scripts in sequence. Adjust or add scripts as needed.
+echo "Running nominal experiment..."
+python3 scripts/online/nominal.py
 
-# 2. Online testing experiments (requires the Udacity simulator)
-echo "----- Running online testing experiments -----"
-echo "Ensure the Udacity simulator is already running!"
-python3 scripts/online/001_error_analysis.py
-python3 scripts/online/001_error_analysis_cyclegan_inpaint.py
-python3 scripts/online/001_error_analysis_cyclegan_instruct.py
+echo "Running instructpix2pix experiment..."
+python3 scripts/online/instructpix2pix.py
 
-# 3. Out-of-distribution (OOD) analysis
-echo "----- Running OOD analysis experiments -----"
-python3 scripts/ood/clustering.py
-python3 scripts/ood/compute_reconstruction_error.py
-python3 scripts/ood/compute_reconstruction_error_simulator.py
+echo "Running stable diffusion inpainting experiment..."
+python3 scripts/online/stable_diffusion_inpainting.py
 
-# 4. Transformation timing analysis
-echo "----- Running timing analysis experiments -----"
-python3 scripts/timing/cyclegan.py
-python3 scripts/timing/dave.py
-python3 scripts/timing/instructpix2pix.py
+echo "Running stable diffusion inpainting with controlnet refining experiment..."
+python3 scripts/online/stable_diffusion_inpainting_controlnet_refining.py
 
 echo "===== All experiments completed successfully! ====="
