@@ -33,6 +33,7 @@ echo "===== Starting experiments for online-testing-augmented-simulator ====="
 # Check if the simulator has already been extracted (assumes extraction creates a directory named "udacity-linux")
 if [ ! -d "udacity-linux" ]; then
   echo "Extracting udacity-linux simulator archive..."
+  wget https://icse-2025.s3.eu-north-1.amazonaws.com/udacity-linux.tar.xz
   tar -xJf udacity-linux.tar.xz
 else
   echo "Simulator archive already extracted; skipping extraction."
@@ -78,6 +79,14 @@ echo "Running stable diffusion inpainting experiment..."
 python3 scripts/online/stable_diffusion_inpainting.py
 
 echo "Running stable diffusion inpainting with controlnet refining experiment..."
+python3 scripts/online/stable_diffusion_inpainting_controlnet_refining.py
+
+echo "Training the distilled CycleGAN..."
+python3 models/cyclegan/train.py
+
+echo "Running distilled models experiment..."
+python3 scripts/online/instructpix2pix.py
+python3 scripts/online/stable_diffusion_inpainting.py
 python3 scripts/online/stable_diffusion_inpainting_controlnet_refining.py
 
 echo "===== All experiments completed successfully! ====="

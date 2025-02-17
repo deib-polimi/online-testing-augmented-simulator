@@ -154,16 +154,20 @@ This artifact includes **executable components** (ADS simulations and augmentati
 - **Python**: Version 3.8 or higher (tested with Python 3.10).  
 - **Dependencies**: Listed in `requirements.txt` (install using `pip install -r requirements.txt`).
 
-**Docker Environment**  
+**Docker Environment**
 
-> **Docker**: We do not recommend to use this artifact in a Docker environment since it requires NVIDIA Drivers and to redirect the X Server output for rendering driving simulations. The proposed image was not used to run our experiments, and we highly recommend to run the experiments without a virtualized environment.
+> **Docker**: We do not recommend to use this artifact in a Docker environment since it requires NVIDIA Drivers and to redirect the X Server output for rendering driving simulations. The proposed image was not used to run our experiments, and we highly recommend to run the experiments without a containerized environment.
 
-1. To build the docker image:
+1. Install Docker and NVIDIA container toolkit..
+
+2. To build the docker image:
    ```bash
    docker build . -t online-testing-augmented-simulator
    ```
 
-2. Create a directory to save results, and run the docker image:
+> **Warning**: When running on docker, ensure that the simulator is running on GPU. Results might be significantly different if it is not running on the proper accelerator.
+
+3. Create a directory to save results, and run the docker image:
    ```bash
    docker run
    --rm 
@@ -344,7 +348,7 @@ Follow their instruction to install CARLA and InterFuser.
    CUDA_VISIBLE_DEVICES=0 ./leaderboard/scripts/run_evaluation.sh
    ```
 
-## New Scenarios
+## Scenario Extensions
 
 New scenarios can be added by editing the python file `domains/domains.py` which contains all the domains that were explored in our experiments. They are:
 
